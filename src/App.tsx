@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -10,8 +10,17 @@ import Events from './pages/Events';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
 import { ClubProvider } from './context/ClubContext';
+import AdminApp from './admin/AdminApp';
 
 function App() {
+  const [isAdminMode, setIsAdminMode] = useState(window.location.pathname.startsWith('/admin'));
+
+  // Admin mode
+  if (isAdminMode || window.location.pathname.startsWith('/admin')) {
+    return <AdminApp />;
+  }
+
+  // Public site
   return (
     <ClubProvider>
       <Router>
@@ -26,6 +35,7 @@ function App() {
               <Route path="/events" element={<Events />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
             </Routes>
           </main>
           <Footer />
