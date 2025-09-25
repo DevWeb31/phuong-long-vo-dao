@@ -34,13 +34,6 @@ jobs:
         VITE_SUPABASE_URL_PROD: ${{ secrets.VITE_SUPABASE_URL_PROD }}
         VITE_SUPABASE_SERVICE_ROLE_KEY_PROD: ${{ secrets.VITE_SUPABASE_SERVICE_ROLE_KEY_PROD }}
         
-    - name: Run database seeders (Production)
-      run: npm run db:seed:prod
-      env:
-        VITE_APP_ENV: production
-        VITE_SUPABASE_URL_PROD: ${{ secrets.VITE_SUPABASE_URL_PROD }}
-        VITE_SUPABASE_SERVICE_ROLE_KEY_PROD: ${{ secrets.VITE_SUPABASE_SERVICE_ROLE_KEY_PROD }}
-        
     # Ajoutez ici les étapes de déploiement vers votre hébergeur
     # Par exemple, déploiement vers Vercel, Netlify, etc.
     

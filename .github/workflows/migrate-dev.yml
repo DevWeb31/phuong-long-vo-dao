@@ -31,13 +31,6 @@ jobs:
         VITE_SUPABASE_URL_DEV: ${{ secrets.VITE_SUPABASE_URL_DEV }}
         VITE_SUPABASE_SERVICE_ROLE_KEY_DEV: ${{ secrets.VITE_SUPABASE_SERVICE_ROLE_KEY_DEV }}
         
-    - name: Run database seeders (Development)
-      run: npm run db:seed:dev
-      env:
-        VITE_APP_ENV: development
-        VITE_SUPABASE_URL_DEV: ${{ secrets.VITE_SUPABASE_URL_DEV }}
-        VITE_SUPABASE_SERVICE_ROLE_KEY_DEV: ${{ secrets.VITE_SUPABASE_SERVICE_ROLE_KEY_DEV }}
-        
     - name: Test application
       run: npm run build
       env:
