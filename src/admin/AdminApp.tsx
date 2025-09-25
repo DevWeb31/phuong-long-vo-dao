@@ -15,6 +15,8 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import AdminLayout from './components/AdminLayout';
 import { AdminProvider, useAdmin } from './context/AdminContext';
+import { MaintenanceProvider, useMaintenance } from './context/MaintenanceContext';
+import MaintenancePage from './pages/MaintenancePage';
 import './admin.css';
 
 const AdminAppContent: React.FC = () => {
@@ -55,12 +57,14 @@ const AdminAppContent: React.FC = () => {
 const AdminApp: React.FC = () => {
   return (
     <AdminProvider>
-      <Router basename="/admin">
-        <div className="admin-app">
-          <AdminAppContent />
-          <Toaster position="top-right" />
-        </div>
-      </Router>
+      <MaintenanceProvider>
+        <Router basename="/admin">
+          <div className="admin-app">
+            <AdminAppContent />
+            <Toaster position="top-right" />
+          </div>
+        </Router>
+      </MaintenanceProvider>
     </AdminProvider>
   );
 };

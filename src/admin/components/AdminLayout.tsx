@@ -15,9 +15,13 @@ import {
   LogOut,
   Menu,
   X,
-  Zap
+  Zap,
+  ExternalLink,
+  Shield,
+  ShieldCheck
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { useMaintenance } from '../context/MaintenanceContext';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -26,6 +30,7 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAdmin();
+  const { isMaintenanceMode, isLoading, toggleMaintenanceMode } = useMaintenance();
   const location = useLocation();
 
   const navigation = [
@@ -49,8 +54,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     return location.pathname.startsWith(path);
   };
 
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -134,27 +140,65 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="flex-1 flex flex-col lg:ml-0">
         {/* Top bar */}
         <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-6">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-gray-600 hover:text-gray-900"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-            
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-gray-600 hover:text-gray-900"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
               <span className="text-sm text-gray-500">
                 Dernière connexion: {user?.lastLogin ? new Date(user.lastLogin).toLocaleString('fr-FR') : 'N/A'}
               </span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm hover:shadow-md"
+                title="Aller sur le site principal"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Site</span>
+              </a>
+
+              {/* Mode Maintenance Switch */}
+              <div className="flex items-center space-x-2">
+                {isMaintenanceMode ? (
+                  <ShieldCheck className="w-4 h-4 text-orange-500" />
+                ) : (
+                  <Shield className="w-4 h-4 text-gray-400" />
+                )}
+                <button
+                  onClick={toggleMaintenanceMode}
+                  disabled={isLoading}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isMaintenanceMode ? 'bg-orange-500' : 'bg-gray-200'
+                  }`}
+                  title={isLoading ? 'Chargement...' : (isMaintenanceMode ? 'Désactiver le mode maintenance' : 'Activer le mode maintenance')}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      isMaintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+                <span className="text-xs text-gray-600">
+                  {isLoading ? '...' : (isMaintenanceMode ? 'Maintenance' : 'Normal')}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-hidden admin-one-page">
           {children}
         </main>
       </div>

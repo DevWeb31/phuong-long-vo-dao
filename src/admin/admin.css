@@ -1,6 +1,24 @@
 /* Admin-specific styles */
 .admin-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Hide scrollbars but keep functionality */
+.admin-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.admin-scroll::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* One page layout */
+.admin-one-page {
+  height: calc(100vh - 4rem); /* Subtract top bar height */
+  overflow: hidden;
 }
 
 .admin-sidebar {
