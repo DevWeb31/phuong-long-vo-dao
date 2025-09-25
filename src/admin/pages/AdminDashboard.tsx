@@ -59,7 +59,7 @@ const AdminDashboard: React.FC = () => {
   const recentActivities = activityLogs.slice(0, 5);
 
   return (
-    <div className="h-full flex flex-col space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -105,21 +105,21 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
-        <div className="admin-card flex flex-col">
+        <div className="admin-card">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Activité récente</h3>
             <Activity className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="flex-1 space-y-3 overflow-y-auto max-h-64 admin-scroll">
+          <div className="space-y-3 max-h-80 overflow-y-auto admin-scroll">
             {recentActivities.length > 0 ? (
               recentActivities.map((activity) => (
                 <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                   <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900">
-                      <span className="font-medium">{activity.userName}</span> {activity.details}
+                      <span className="font-medium">{activity.userName}</span> {activity.description}
                     </p>
                     <p className="text-xs text-gray-500">
                       {new Date(activity.timestamp).toLocaleString('fr-FR')}
@@ -134,12 +134,12 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Club Overview */}
-        <div className="admin-card flex flex-col">
+        <div className="admin-card">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Aperçu des clubs</h3>
             <Building2 className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="flex-1 space-y-3 overflow-y-auto max-h-64 admin-scroll">
+          <div className="space-y-3 max-h-80 overflow-y-auto admin-scroll">
             {clubs.map((club) => (
               <div key={club.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>

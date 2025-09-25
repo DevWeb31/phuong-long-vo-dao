@@ -56,7 +56,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="h-screen bg-gray-100 flex overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -68,7 +68,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="flex items-center justify-between h-16 px-6 bg-red-600">
@@ -88,8 +88,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </button>
         </div>
 
-        <nav className="mt-8">
-          <div className="px-4 space-y-2">
+        <nav className="flex-1 mt-8 overflow-y-auto">
+          <div className="px-4 space-y-2 pb-4">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
@@ -112,7 +112,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </nav>
 
         {/* User info and logout */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">
@@ -140,9 +140,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        {/* Top bar */}
-        <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar - Fixe */}
+        <div className="flex-shrink-0 bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-6">
             <div className="flex items-center space-x-4">
               <button
@@ -197,8 +197,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Page content */}
-        <main className="flex-1 p-6 overflow-hidden admin-one-page">
+        {/* Page content - Scrollable */}
+        <main className="flex-1 p-6 overflow-y-auto admin-content">
           {children}
         </main>
       </div>

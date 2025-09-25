@@ -5,20 +5,52 @@
   overflow: hidden;
 }
 
-/* Hide scrollbars but keep functionality */
+/* Custom scrollbar styling */
 .admin-scroll {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
 }
 
 .admin-scroll::-webkit-scrollbar {
-  display: none; /* WebKit */
+  width: 6px;
 }
 
-/* One page layout */
-.admin-one-page {
-  height: calc(100vh - 4rem); /* Subtract top bar height */
-  overflow: hidden;
+.admin-scroll::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 3px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Main content scrollable area */
+.admin-content {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 #ffffff;
+}
+
+.admin-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-content::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+.admin-content::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.admin-content::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e0;
 }
 
 .admin-sidebar {
