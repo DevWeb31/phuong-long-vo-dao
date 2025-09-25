@@ -21,6 +21,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { useMaintenance } from '../context/MaintenanceContext';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -28,8 +29,8 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const { user, logout } = useAdmin();
+  const { isMaintenanceMode, isLoading, toggleMaintenanceMode } = useMaintenance();
   const location = useLocation();
 
   const navigation = [
@@ -53,12 +54,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     return location.pathname.startsWith(path);
   };
 
-  const toggleMaintenanceMode = () => {
-    setMaintenanceMode(!maintenanceMode);
-    // Ici vous pourrez ajouter la logique pour activer/désactiver le mode maintenance
-    // Par exemple, envoyer une requête au serveur ou mettre à jour une base de données
-    console.log('Mode maintenance:', !maintenanceMode ? 'Activé' : 'Désactivé');
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -175,26 +170,27 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
               {/* Mode Maintenance Switch */}
               <div className="flex items-center space-x-2">
-                {maintenanceMode ? (
+                {isMaintenanceMode ? (
                   <ShieldCheck className="w-4 h-4 text-orange-500" />
                 ) : (
                   <Shield className="w-4 h-4 text-gray-400" />
                 )}
                 <button
                   onClick={toggleMaintenanceMode}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
-                    maintenanceMode ? 'bg-orange-500' : 'bg-gray-200'
+                  disabled={isLoading}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isMaintenanceMode ? 'bg-orange-500' : 'bg-gray-200'
                   }`}
-                  title={maintenanceMode ? 'Désactiver le mode maintenance' : 'Activer le mode maintenance'}
+                  title={isLoading ? 'Chargement...' : (isMaintenanceMode ? 'Désactiver le mode maintenance' : 'Activer le mode maintenance')}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                      isMaintenanceMode ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
                 </button>
                 <span className="text-xs text-gray-600">
-                  {maintenanceMode ? 'Maintenance' : 'Normal'}
+                  {isLoading ? '...' : (isMaintenanceMode ? 'Maintenance' : 'Normal')}
                 </span>
               </div>
             </div>
