@@ -59,14 +59,14 @@ const AdminDashboard: React.FC = () => {
   const recentActivities = activityLogs.slice(0, 5);
 
   return (
-    <div className="h-full flex flex-col space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Vue d'ensemble de l'activité</p>
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <p className="text-white/70">Vue d'ensemble de l'activité</p>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-white/60">
           Dernière mise à jour: {new Date().toLocaleString('fr-FR')}
         </div>
       </div>
@@ -76,26 +76,26 @@ const AdminDashboard: React.FC = () => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.name} className="admin-card">
+            <div key={stat.name} className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200">
               <div className="flex items-center">
-                <div className={`p-3 rounded-lg ${stat.color}`}>
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="p-3 bg-gradient-to-br from-yellow-400/20 to-red-500/20 rounded-lg border border-white/20">
+                  <Icon className="w-6 h-6 text-yellow-400" />
                 </div>
                 <div className="ml-4 flex-1">
-                  <p className="text-sm font-medium text-gray-600">{stat.name}</p>
+                  <p className="text-sm font-medium text-white/80">{stat.name}</p>
                   <div className="flex items-center">
-                    <p className="text-2xl font-semibold text-gray-900">
+                    <p className="text-2xl font-semibold text-white">
                       {stat.value}
                     </p>
                     {stat.total && (
-                      <p className="text-sm text-gray-500 ml-1">
+                      <p className="text-sm text-white/60 ml-1">
                         /{stat.total}
                       </p>
                     )}
                   </div>
                   <div className="flex items-center mt-1">
-                    <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                    <span className="text-sm text-green-600">{stat.change}</span>
+                    <TrendingUp className="w-4 h-4 text-yellow-400 mr-1" />
+                    <span className="text-sm text-yellow-300">{stat.change}</span>
                   </div>
                 </div>
               </div>
@@ -105,50 +105,50 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
-        <div className="admin-card flex flex-col">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Activité récente</h3>
-            <Activity className="w-5 h-5 text-gray-400" />
+            <h3 className="text-lg font-semibold text-white">Activité récente</h3>
+            <Activity className="w-5 h-5 text-yellow-400" />
           </div>
-          <div className="flex-1 space-y-3 overflow-y-auto max-h-64 admin-scroll">
+          <div className="space-y-3 max-h-80 overflow-y-auto admin-scroll">
             {recentActivities.length > 0 ? (
               recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                <div key={activity.id} className="flex items-start space-x-3 p-3 bg-white/5 border border-white/10 rounded-lg">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2"></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">
-                      <span className="font-medium">{activity.userName}</span> {activity.details}
+                    <p className="text-sm text-white">
+                      <span className="font-medium text-yellow-300">{activity.userName}</span> {activity.description}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-white/60">
                       {new Date(activity.timestamp).toLocaleString('fr-FR')}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center py-4">Aucune activité récente</p>
+              <p className="text-white/60 text-center py-4">Aucune activité récente</p>
             )}
           </div>
         </div>
 
         {/* Club Overview */}
-        <div className="admin-card flex flex-col">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Aperçu des clubs</h3>
-            <Building2 className="w-5 h-5 text-gray-400" />
+            <h3 className="text-lg font-semibold text-white">Aperçu des clubs</h3>
+            <Building2 className="w-5 h-5 text-yellow-400" />
           </div>
-          <div className="flex-1 space-y-3 overflow-y-auto max-h-64 admin-scroll">
+          <div className="space-y-3 max-h-80 overflow-y-auto admin-scroll">
             {clubs.map((club) => (
-              <div key={club.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={club.id} className="flex items-center justify-between p-3 bg-white/5 border border-white/10 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{club.name}</p>
-                  <p className="text-sm text-gray-600">{club.city} ({club.department})</p>
+                  <p className="font-medium text-white">{club.name}</p>
+                  <p className="text-sm text-white/70">{club.city} ({club.department})</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-semibold text-gray-900">{club.memberCount}</p>
-                  <p className="text-xs text-gray-500">membres</p>
+                  <p className="text-lg font-semibold text-white">{club.memberCount}</p>
+                  <p className="text-xs text-white/60">membres</p>
                 </div>
               </div>
             ))}
@@ -160,7 +160,7 @@ const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <div className="admin-card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Actions rapides</h3>
           <div className="grid grid-cols-1 gap-3">
             <button className="flex items-center justify-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
               <Users className="w-5 h-5 text-blue-600 mr-3" />
@@ -181,7 +181,7 @@ const AdminDashboard: React.FC = () => {
         <div className="admin-card">
           <div className="flex items-center mb-4">
             <AlertCircle className="w-5 h-5 text-orange-500 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Alertes et notifications</h3>
+            <h3 className="text-lg font-semibold text-white">Alertes et notifications</h3>
           </div>
           <div className="space-y-3">
             <div className="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg">

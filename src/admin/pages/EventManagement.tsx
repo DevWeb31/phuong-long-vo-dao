@@ -50,7 +50,7 @@ const EventManagement: React.FC = () => {
       demonstration: 'bg-green-100 text-green-800',
       meeting: 'bg-purple-100 text-purple-800'
     };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[type as keyof typeof colors] || 'bg-white/10 text-white border border-white/20';
   };
 
   const handleDeleteEvent = async (id: string) => {
@@ -93,8 +93,8 @@ const EventManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des événements</h1>
-          <p className="text-gray-600">{filteredEvents.length} événement(s) trouvé(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des événements</h1>
+          <p className="text-white/70">{filteredEvents.length} événement(s) trouvé(s)</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -200,10 +200,10 @@ const EventManagement: React.FC = () => {
 
             {/* Event Info */}
             <div className="space-y-2 mb-4">
-              <h3 className="font-semibold text-gray-900">{event.title}</h3>
-              <p className="text-sm text-gray-600 line-clamp-2">{event.description}</p>
+              <h3 className="font-semibold text-white">{event.title}</h3>
+              <p className="text-sm text-white/70 line-clamp-2">{event.description}</p>
               
-              <div className="space-y-1 text-sm text-gray-600">
+              <div className="space-y-1 text-sm text-white/70">
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
                   <span>{new Date(event.date).toLocaleDateString('fr-FR')}</span>
@@ -221,11 +221,11 @@ const EventManagement: React.FC = () => {
 
             {/* Event Stats */}
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-white/70">
                 <Users className="w-4 h-4" />
                 <span>{event.currentParticipants}/{event.maxParticipants}</span>
               </div>
-              <div className="text-gray-600">
+              <div className="text-white/70">
                 {getClubName(event.clubId)}
               </div>
             </div>
@@ -239,7 +239,7 @@ const EventManagement: React.FC = () => {
                   {event.registrationOpen ? 'Inscriptions ouvertes' : 'Inscriptions fermées'}
                 </span>
                 {event.price > 0 && (
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-white">
                     {event.price}€
                   </span>
                 )}
@@ -251,11 +251,11 @@ const EventManagement: React.FC = () => {
 
       {filteredEvents.length === 0 && (
         <div className="admin-card text-center py-12">
-          <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <Calendar className="w-12 h-12 text-white/60 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-white mb-2">
             Aucun événement trouvé
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-white/70 mb-4">
             Aucun événement ne correspond aux critères sélectionnés.
           </p>
           <button
@@ -346,14 +346,14 @@ const EventModal: React.FC<{
           <h3 className="text-lg font-semibold">
             {event ? 'Modifier l\'événement' : 'Créer un événement'}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Titre *
             </label>
             <input
@@ -366,7 +366,7 @@ const EventModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Description *
             </label>
             <textarea
@@ -380,7 +380,7 @@ const EventModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Date *
               </label>
               <input
@@ -392,7 +392,7 @@ const EventModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Heure *
               </label>
               <input
@@ -404,7 +404,7 @@ const EventModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Type *
               </label>
               <select
@@ -423,7 +423,7 @@ const EventModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Lieu *
               </label>
               <input
@@ -435,7 +435,7 @@ const EventModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Club *
               </label>
               <select
@@ -454,7 +454,7 @@ const EventModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Participants max
               </label>
               <input
@@ -466,7 +466,7 @@ const EventModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Prix (€)
               </label>
               <input
@@ -481,7 +481,7 @@ const EventModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Image (URL)
             </label>
             <input
@@ -500,7 +500,7 @@ const EventModal: React.FC<{
                 onChange={(e) => setFormData({...formData, registrationOpen: e.target.checked})}
                 className="rounded border-gray-300 text-red-600 focus:ring-red-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white/80">
                 Inscriptions ouvertes
               </span>
             </label>
@@ -538,7 +538,7 @@ const EventDetailModal: React.FC<{
       <div className="admin-modal max-w-2xl">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Détails de l'événement</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
@@ -555,35 +555,35 @@ const EventDetailModal: React.FC<{
           )}
 
           <div>
-            <h4 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h4>
-            <p className="text-gray-600">{event.description}</p>
+            <h4 className="text-xl font-bold text-white mb-2">{event.title}</h4>
+            <p className="text-white/70">{event.description}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h5 className="font-medium text-gray-900 mb-3">Informations pratiques</h5>
+              <h5 className="font-medium text-white mb-3">Informations pratiques</h5>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center space-x-2">
-                  <Calendar className="w-4 h-4 text-gray-400" />
+                  <Calendar className="w-4 h-4 text-white/60" />
                   <span>{new Date(event.date).toLocaleDateString('fr-FR')}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-gray-400" />
+                  <Clock className="w-4 h-4 text-white/60" />
                   <span>{event.time}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <MapPin className="w-4 h-4 text-white/60" />
                   <span>{event.location}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Users className="w-4 h-4 text-white/60" />
                   <span>{event.currentParticipants}/{event.maxParticipants} participants</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <h5 className="font-medium text-gray-900 mb-3">Détails</h5>
+              <h5 className="font-medium text-white mb-3">Détails</h5>
               <div className="space-y-2 text-sm">
                 <p><span className="font-medium">Club:</span> {club?.name}</p>
                 <p><span className="font-medium">Type:</span> {event.type}</p>

@@ -64,8 +64,8 @@ const MediaManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des médias</h1>
-          <p className="text-gray-600">{filteredFiles.length} fichier(s) trouvé(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des médias</h1>
+          <p className="text-white/70">{filteredFiles.length} fichier(s) trouvé(s)</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -83,7 +83,7 @@ const MediaManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Rechercher des fichiers..."
@@ -121,13 +121,13 @@ const MediaManagement: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-red-100 text-red-600' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-yellow-400/20 text-yellow-400' : 'text-white/60 hover:text-white'}`}
             >
               <Grid3X3 className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded ${viewMode === 'list' ? 'bg-red-100 text-red-600' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-yellow-400/20 text-yellow-400' : 'text-white/60 hover:text-white'}`}
             >
               <List className="w-5 h-5" />
             </button>
@@ -143,8 +143,8 @@ const MediaManagement: React.FC = () => {
               <ImageIcon className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total fichiers</p>
-              <p className="text-2xl font-semibold text-gray-900">{mediaFiles.length}</p>
+              <p className="text-sm font-medium text-white/80">Total fichiers</p>
+              <p className="text-2xl font-semibold text-white">{mediaFiles.length}</p>
             </div>
           </div>
         </div>
@@ -155,8 +155,8 @@ const MediaManagement: React.FC = () => {
               <ImageIcon className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Images</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Images</p>
+              <p className="text-2xl font-semibold text-white">
                 {mediaFiles.filter(f => f.type === 'image').length}
               </p>
             </div>
@@ -169,8 +169,8 @@ const MediaManagement: React.FC = () => {
               <Folder className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Documents</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Documents</p>
+              <p className="text-2xl font-semibold text-white">
                 {mediaFiles.filter(f => f.type === 'document').length}
               </p>
             </div>
@@ -183,8 +183,8 @@ const MediaManagement: React.FC = () => {
               <Upload className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Espace utilisé</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Espace utilisé</p>
+              <p className="text-2xl font-semibold text-white">
                 {formatFileSize(mediaFiles.reduce((acc, f) => acc + f.size, 0))}
               </p>
             </div>
@@ -214,7 +214,7 @@ const MediaManagement: React.FC = () => {
 
               {/* File Info */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-900 truncate" title={file.name}>
+                <h3 className="font-medium text-white truncate" title={file.name}>
                   {file.name}
                 </h3>
                 <div className="text-sm text-gray-600">

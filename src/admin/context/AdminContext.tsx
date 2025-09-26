@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '../../config/supabase';
+import type { User, Session } from '@supabase/supabase-js';
 
 export interface AdminUser {
   id: string;
@@ -145,7 +147,11 @@ export interface ActivityLog {
   action: string;
   resource: string;
   resourceId: string;
-  details: string;
+  description: string;
+  details: {
+    ip: string;
+    userAgent: string;
+  };
   timestamp: string;
   ipAddress: string;
 }
@@ -153,6 +159,7 @@ export interface ActivityLog {
 interface AdminContextType {
   user: AdminUser | null;
   loading: boolean;
+  sessionRestored: boolean;
   members: Member[];
   clubs: AdminClub[];
   events: AdminEvent[];
@@ -163,8 +170,8 @@ interface AdminContextType {
   activityLogs: ActivityLog[];
   
   // Auth methods
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
   
   // Member methods
   getMembers: (clubId?: string) => Member[];
@@ -205,6 +212,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessionRestored, setSessionRestored] = useState(false);
   const [members, setMembers] = useState<Member[]>([]);
   const [clubs, setClubs] = useState<AdminClub[]>([]);
   const [events, setEvents] = useState<AdminEvent[]>([]);
@@ -286,30 +294,209 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setLoading(false);
     };
 
+    // Restaurer la session au chargement
+    restoreSession();
     initializeData();
+
+    // Écouter les changements d'état d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        setUser(null);
+        localStorage.removeItem('adminUser');
+        localStorage.removeItem('adminToken');
+      } else if (event === 'SIGNED_IN' && session) {
+        // La session sera restaurée automatiquement par restoreSession
+        console.log('Utilisateur connecté:', session.user.email);
+      }
+    });
+
+    // Nettoyer l'abonnement au démontage
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication
-    if (email === 'admin@phuonglong.fr' && password === 'admin123') {
-      const mockUser: AdminUser = {
-        id: '1',
-        email: 'admin@phuonglong.fr',
-        name: 'Administrateur Principal',
-        role: 'superadmin',
-        clubAccess: ['montaigut', 'tregeux', 'lanester', 'cublize', 'wimille'],
-        permissions: ['all'],
-        lastLogin: new Date().toISOString(),
-        isActive: true
-      };
-      setUser(mockUser);
-      return true;
+  // Fonction pour restaurer la session
+  const restoreSession = async () => {
+    try {
+      // Vérifier s'il y a une session Supabase active
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error('Erreur lors de la récupération de la session:', error);
+        return;
+      }
+
+      if (session?.user) {
+        // Récupérer les données utilisateur depuis la table users
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', session.user.email)
+          .single();
+
+        if (userError || !userData) {
+          console.error('Utilisateur non trouvé dans la table users');
+          return;
+        }
+
+        // Créer l'objet utilisateur admin
+        const adminUser: AdminUser = {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: userData.name,
+          role: userData.role,
+          clubAccess: ['montaigut', 'tregeux', 'lanester', 'cublize', 'wimille'],
+          permissions: ['all'],
+          lastLogin: new Date().toISOString(),
+          isActive: userData.role !== 'inactive'
+        };
+
+        setUser(adminUser);
+        localStorage.setItem('adminUser', JSON.stringify(adminUser));
+        localStorage.setItem('adminToken', session.access_token);
+        setSessionRestored(true);
+        
+        console.log('Session restaurée avec succès');
+      } else {
+        // Vérifier le localStorage en fallback
+        const savedUser = localStorage.getItem('adminUser');
+        const savedToken = localStorage.getItem('adminToken');
+        
+        if (savedUser && savedToken) {
+          try {
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
+            setSessionRestored(true);
+            console.log('Session restaurée depuis localStorage');
+          } catch (error) {
+            console.error('Erreur lors du parsing du localStorage:', error);
+            localStorage.removeItem('adminUser');
+            localStorage.removeItem('adminToken');
+          }
+        }
+      }
+      
+      // Marquer la session comme restaurée même si pas d'utilisateur
+      setSessionRestored(true);
+    } catch (error) {
+      console.error('Erreur lors de la restauration de session:', error);
     }
-    return false;
   };
 
-  const logout = () => {
-    setUser(null);
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      // Authentification avec Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Erreur de connexion:', error.message);
+        return { success: false, error: error.message };
+      }
+
+      if (data.user) {
+        // Vérifier si l'utilisateur a les droits admin
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .single();
+
+        if (userError || !userData) {
+          return { success: false, error: 'Utilisateur non autorisé' };
+        }
+
+        // Créer l'objet utilisateur admin
+        const adminUser: AdminUser = {
+          id: data.user.id,
+          email: data.user.email || email,
+          name: userData.name,
+          role: userData.role,
+          clubAccess: ['montaigut', 'tregeux', 'lanester', 'cublize', 'wimille'], // TODO: Récupérer depuis la DB
+          permissions: ['all'], // TODO: Récupérer depuis la DB
+          lastLogin: new Date().toISOString(),
+          isActive: userData.role !== 'inactive'
+        };
+
+        setUser(adminUser);
+        localStorage.setItem('adminUser', JSON.stringify(adminUser));
+        localStorage.setItem('adminToken', data.session?.access_token || '');
+
+        // Mettre à jour la dernière connexion dans la DB
+        await supabase
+          .from('users')
+          .update({ last_login: new Date().toISOString() })
+          .eq('email', email);
+
+        // Ajouter à l'historique d'activité
+        const loginActivity: ActivityLog = {
+          id: Date.now().toString(),
+          userId: adminUser.id,
+          userName: adminUser.name,
+          action: 'login',
+          resource: 'auth',
+          resourceId: adminUser.id,
+          description: `Connexion de ${adminUser.email}`,
+          details: {
+            ip: '127.0.0.1',
+            userAgent: navigator.userAgent
+          },
+          timestamp: new Date().toISOString(),
+          ipAddress: '127.0.0.1'
+        };
+
+        setActivityLogs(prev => [loginActivity, ...prev.slice(0, 49)]);
+
+        return { success: true };
+      }
+
+      return { success: false, error: 'Erreur de connexion' };
+    } catch (error) {
+      console.error('Erreur lors de la connexion:', error);
+      return { success: false, error: 'Erreur de connexion' };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      // Déconnexion Supabase
+      await supabase.auth.signOut();
+      
+      // Nettoyer le state local
+      setUser(null);
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
+      
+      // Ajouter à l'historique d'activité
+      if (user) {
+        const logoutActivity: ActivityLog = {
+          id: Date.now().toString(),
+          userId: user.id,
+          userName: user.name,
+          action: 'logout',
+          resource: 'auth',
+          resourceId: user.id,
+          description: `Déconnexion de ${user.email}`,
+          details: {
+            ip: '127.0.0.1',
+            userAgent: navigator.userAgent
+          },
+          timestamp: new Date().toISOString(),
+          ipAddress: '127.0.0.1'
+        };
+        
+        setActivityLogs(prev => [logoutActivity, ...prev.slice(0, 49)]);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      // Nettoyer quand même le state local
+      setUser(null);
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
+    }
   };
 
   const getMembers = (clubId?: string) => {
@@ -469,6 +656,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <AdminContext.Provider value={{
       user,
       loading,
+      sessionRestored,
       members,
       clubs,
       events,
