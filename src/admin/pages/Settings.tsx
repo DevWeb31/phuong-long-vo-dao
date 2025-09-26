@@ -109,8 +109,8 @@ const Settings: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Paramètres</h1>
-          <p className="text-gray-600">Configuration de l'application</p>
+          <h1 className="text-2xl font-bold text-white">Paramètres</h1>
+          <p className="text-white/70">Configuration de l'application</p>
         </div>
       </div>
 
@@ -128,7 +128,7 @@ const Settings: React.FC = () => {
                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                       activeTab === tab.id
                         ? 'bg-red-100 text-red-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -146,7 +146,7 @@ const Settings: React.FC = () => {
           {activeTab === 'general' && (
             <div className="admin-card">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Paramètres généraux</h3>
+                <h3 className="text-lg font-semibold text-white">Paramètres généraux</h3>
                 <button
                   onClick={() => handleSave('général')}
                   className="admin-button-primary flex items-center space-x-2"
@@ -159,7 +159,7 @@ const Settings: React.FC = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Nom de l'association
                     </label>
                     <input
@@ -170,7 +170,7 @@ const Settings: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Email principal
                     </label>
                     <input
@@ -183,7 +183,7 @@ const Settings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     Description
                   </label>
                   <textarea
@@ -196,7 +196,7 @@ const Settings: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Téléphone
                     </label>
                     <input
@@ -207,7 +207,7 @@ const Settings: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Site web
                     </label>
                     <input
@@ -220,7 +220,7 @@ const Settings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     Adresse
                   </label>
                   <input
@@ -233,7 +233,7 @@ const Settings: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Fuseau horaire
                     </label>
                     <select
@@ -247,7 +247,7 @@ const Settings: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-white/80 mb-1">
                       Langue
                     </label>
                     <select
@@ -268,7 +268,7 @@ const Settings: React.FC = () => {
           {activeTab === 'notifications' && (
             <div className="admin-card">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                <h3 className="text-lg font-semibold text-white">Notifications</h3>
                 <button
                   onClick={() => handleSave('notifications')}
                   className="admin-button-primary flex items-center space-x-2"
@@ -280,7 +280,7 @@ const Settings: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-4">Notifications par email</h4>
+                  <h4 className="text-md font-medium text-white mb-4">Notifications par email</h4>
                   <div className="space-y-3">
                     {[
                       { key: 'emailNotifications', label: 'Activer les notifications par email' },
@@ -296,14 +296,14 @@ const Settings: React.FC = () => {
                           onChange={(e) => updateSetting('notifications', notification.key, e.target.checked)}
                           className="rounded border-gray-300 text-red-600 focus:ring-red-500"
                         />
-                        <span className="text-sm text-gray-700">{notification.label}</span>
+                        <span className="text-sm text-white/80">{notification.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-4">Rapports automatiques</h4>
+                  <h4 className="text-md font-medium text-white mb-4">Rapports automatiques</h4>
                   <div className="space-y-3">
                     {[
                       { key: 'weeklyReports', label: 'Rapports hebdomadaires' },
@@ -316,7 +316,7 @@ const Settings: React.FC = () => {
                           onChange={(e) => updateSetting('notifications', report.key, e.target.checked)}
                           className="rounded border-gray-300 text-red-600 focus:ring-red-500"
                         />
-                        <span className="text-sm text-gray-700">{report.label}</span>
+                        <span className="text-sm text-white/80">{report.label}</span>
                       </label>
                     ))}
                   </div>
@@ -329,7 +329,7 @@ const Settings: React.FC = () => {
           {activeTab === 'facebook' && (
             <div className="admin-card">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Intégration Facebook</h3>
+                <h3 className="text-lg font-semibold text-white">Intégration Facebook</h3>
                 <button
                   onClick={() => handleSave('Facebook')}
                   className="admin-button-primary flex items-center space-x-2"
@@ -341,7 +341,7 @@ const Settings: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-4">Synchronisation automatique</h4>
+                  <h4 className="text-md font-medium text-white mb-4">Synchronisation automatique</h4>
                   <div className="space-y-4">
                     <label className="flex items-center space-x-3">
                       <input
@@ -355,7 +355,7 @@ const Settings: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-white/80 mb-1">
                           Intervalle de synchronisation (minutes)
                         </label>
                         <input
@@ -402,7 +402,7 @@ const Settings: React.FC = () => {
                           </label>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-sm font-medium text-white/80 mb-1">
                             ID de la page Facebook
                           </label>
                           <input
@@ -443,7 +443,7 @@ const Settings: React.FC = () => {
                   <h4 className="text-md font-medium text-gray-900 mb-4">Authentification</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Durée de session (minutes)
                       </label>
                       <input
@@ -456,7 +456,7 @@ const Settings: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Longueur minimale du mot de passe
                       </label>
                       <input
@@ -496,7 +496,7 @@ const Settings: React.FC = () => {
                   <h4 className="text-md font-medium text-gray-900 mb-4">Journalisation et sauvegarde</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Rétention des logs (jours)
                       </label>
                       <input
@@ -509,7 +509,7 @@ const Settings: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Fréquence de sauvegarde
                       </label>
                       <select
@@ -547,7 +547,7 @@ const Settings: React.FC = () => {
                   <h4 className="text-md font-medium text-gray-900 mb-4">Thème</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Mode d'affichage
                       </label>
                       <select
@@ -561,7 +561,7 @@ const Settings: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Couleur principale
                       </label>
                       <input
@@ -572,7 +572,7 @@ const Settings: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         Couleur secondaire
                       </label>
                       <input
@@ -589,7 +589,7 @@ const Settings: React.FC = () => {
                   <h4 className="text-md font-medium text-gray-900 mb-4">Logos et icônes</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         URL du logo
                       </label>
                       <input
@@ -601,7 +601,7 @@ const Settings: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-white/80 mb-1">
                         URL du favicon
                       </label>
                       <input
@@ -616,7 +616,7 @@ const Settings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     CSS personnalisé
                   </label>
                   <textarea

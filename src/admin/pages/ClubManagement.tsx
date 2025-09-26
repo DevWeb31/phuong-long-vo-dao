@@ -46,8 +46,8 @@ const ClubManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des clubs</h1>
-          <p className="text-gray-600">{clubs.length} club(s) enregistré(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des clubs</h1>
+          <p className="text-white/70">{clubs.length} club(s) enregistré(s)</p>
         </div>
       </div>
 
@@ -88,8 +88,8 @@ const ClubDisplay: React.FC<{
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{club.name}</h3>
-            <p className="text-sm text-gray-600">{club.city} ({club.department})</p>
+            <h3 className="text-lg font-semibold text-white">{club.name}</h3>
+            <p className="text-sm text-white/70">{club.city} ({club.department})</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -109,33 +109,33 @@ const ClubDisplay: React.FC<{
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <Users className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-          <p className="text-lg font-semibold text-gray-900">{club.memberCount}</p>
-          <p className="text-xs text-gray-600">Adhérents</p>
+          <Users className="w-5 h-5 text-white/70 mx-auto mb-1" />
+          <p className="text-lg font-semibold text-white">{club.memberCount}</p>
+          <p className="text-xs text-white/60">Adhérents</p>
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <Clock className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-          <p className="text-lg font-semibold text-gray-900">{club.schedules.length}</p>
-          <p className="text-xs text-gray-600">Créneaux</p>
+          <Clock className="w-5 h-5 text-white/70 mx-auto mb-1" />
+          <p className="text-lg font-semibold text-white">{club.schedules.length}</p>
+          <p className="text-xs text-white/60">Créneaux</p>
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <Award className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-          <p className="text-lg font-semibold text-gray-900">{club.specialties.length}</p>
-          <p className="text-xs text-gray-600">Spécialités</p>
+          <Award className="w-5 h-5 text-white/70 mx-auto mb-1" />
+          <p className="text-lg font-semibold text-white">{club.specialties.length}</p>
+          <p className="text-xs text-white/60">Spécialités</p>
         </div>
       </div>
 
       {/* Contact Info */}
       <div className="space-y-2 mb-4">
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
+        <div className="flex items-center space-x-2 text-sm text-white/70">
           <MapPin className="w-4 h-4" />
           <span>{club.address}</span>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
+        <div className="flex items-center space-x-2 text-sm text-white/70">
           <Phone className="w-4 h-4" />
           <span>{club.phone}</span>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
+        <div className="flex items-center space-x-2 text-sm text-white/70">
           <Mail className="w-4 h-4" />
           <span>{club.email}</span>
         </div>

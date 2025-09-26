@@ -56,8 +56,8 @@ const ContentManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des contenus</h1>
-          <p className="text-gray-600">Articles et synchronisation Facebook</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des contenus</h1>
+          <p className="text-white/70">Articles et synchronisation Facebook</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -125,7 +125,7 @@ const ContentManagement: React.FC = () => {
                 ) : (
                   <FileText className="w-5 h-5 text-green-600" />
                 )}
-                <span className="text-sm font-medium text-gray-600">
+                <span className="text-sm font-medium text-white/80">
                   {getClubName(post.clubId)}
                 </span>
               </div>
@@ -151,13 +151,13 @@ const ContentManagement: React.FC = () => {
 
             {/* Post Content */}
             <div className="mb-4">
-              <p className="text-sm text-gray-700 line-clamp-3">
+              <p className="text-sm text-white/90 line-clamp-3">
                 {post.content}
               </p>
             </div>
 
             {/* Post Meta */}
-            <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+            <div className="flex items-center justify-between text-xs text-white/60 mb-4">
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4" />
                 <span>{new Date(post.date).toLocaleDateString('fr-FR')}</span>
@@ -217,11 +217,11 @@ const ContentManagement: React.FC = () => {
 
       {filteredPosts.length === 0 && (
         <div className="admin-card text-center py-12">
-          <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <FileText className="w-12 h-12 text-white/60 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-white mb-2">
             Aucun contenu trouvé
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-white/70 mb-4">
             Aucun contenu ne correspond aux critères sélectionnés.
           </p>
           <button
@@ -235,7 +235,7 @@ const ContentManagement: React.FC = () => {
 
       {/* Facebook Sync Status */}
       <div className="admin-card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-white mb-4">
           Statut de synchronisation Facebook
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -244,8 +244,8 @@ const ContentManagement: React.FC = () => {
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Facebook className="w-6 h-6 text-white" />
               </div>
-              <h4 className="font-medium text-gray-900 mb-1">{club.name}</h4>
-              <p className="text-sm text-gray-600 mb-2">
+              <h4 className="font-medium text-white mb-1">{club.name}</h4>
+              <p className="text-sm text-white/70 mb-2">
                 {facebookPosts.filter(p => p.clubId === club.id && p.isImported).length} posts
               </p>
               <button
@@ -300,14 +300,14 @@ const CreateArticleModal: React.FC<{
       <div className="admin-modal max-w-2xl">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Créer un article</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Titre *
             </label>
             <input
@@ -321,7 +321,7 @@ const CreateArticleModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Club *
             </label>
             <select
@@ -338,7 +338,7 @@ const CreateArticleModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Image (URL)
             </label>
             <input
@@ -351,7 +351,7 @@ const CreateArticleModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Contenu *
             </label>
             <textarea
@@ -372,7 +372,7 @@ const CreateArticleModal: React.FC<{
                 onChange={(e) => setFormData({...formData, publishNow: e.target.checked})}
                 className="rounded border-gray-300 text-red-600 focus:ring-red-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white/80">
                 Publier immédiatement
               </span>
             </label>

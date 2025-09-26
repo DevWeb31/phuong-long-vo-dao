@@ -97,8 +97,8 @@ const Reports: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Rapports et statistiques</h1>
-          <p className="text-gray-600">Analyse des données de l'association</p>
+          <h1 className="text-2xl font-bold text-white">Rapports et statistiques</h1>
+          <p className="text-white/70">Analyse des données de l'association</p>
         </div>
         <div className="flex space-x-3">
           <select
@@ -131,7 +131,7 @@ const Reports: React.FC = () => {
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                   selectedReport === report.id
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -153,8 +153,8 @@ const Reports: React.FC = () => {
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total adhérents</p>
-                  <p className="text-2xl font-semibold text-gray-900">{members.length}</p>
+                  <p className="text-sm font-medium text-white/80">Total adhérents</p>
+                  <p className="text-2xl font-semibold text-white">{members.length}</p>
                   <div className="flex items-center mt-1">
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm text-green-600">+8.2%</span>
@@ -169,8 +169,8 @@ const Reports: React.FC = () => {
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Événements</p>
-                  <p className="text-2xl font-semibold text-gray-900">{events.length}</p>
+                  <p className="text-sm font-medium text-white/80">Événements</p>
+                  <p className="text-2xl font-semibold text-white">{events.length}</p>
                   <div className="flex items-center mt-1">
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm text-green-600">+15.3%</span>
@@ -185,8 +185,8 @@ const Reports: React.FC = () => {
                   <Activity className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Posts Facebook</p>
-                  <p className="text-2xl font-semibold text-gray-900">{facebookPosts.length}</p>
+                  <p className="text-sm font-medium text-white/80">Posts Facebook</p>
+                  <p className="text-2xl font-semibold text-white">{facebookPosts.length}</p>
                   <div className="flex items-center mt-1">
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm text-green-600">+12.1%</span>
@@ -201,8 +201,8 @@ const Reports: React.FC = () => {
                   <FileText className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Communications</p>
-                  <p className="text-2xl font-semibold text-gray-900">{communications.length}</p>
+                  <p className="text-sm font-medium text-white/80">Communications</p>
+                  <p className="text-2xl font-semibold text-white">{communications.length}</p>
                   <div className="flex items-center mt-1">
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm text-green-600">+5.7%</span>
@@ -215,7 +215,7 @@ const Reports: React.FC = () => {
           {/* Activity Chart */}
           <div className="admin-card">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Évolution mensuelle</h3>
+              <h3 className="text-lg font-semibold text-white">Évolution mensuelle</h3>
               <button
                 onClick={() => exportReport('activity')}
                 className="admin-button-secondary flex items-center space-x-2"
@@ -248,7 +248,7 @@ const Reports: React.FC = () => {
             {/* Members by Club */}
             <div className="admin-card">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Adhérents par club</h3>
+                <h3 className="text-lg font-semibold text-white">Adhérents par club</h3>
                 <button
                   onClick={() => exportReport('members')}
                   className="admin-button-secondary flex items-center space-x-2"
@@ -273,7 +273,7 @@ const Reports: React.FC = () => {
 
             {/* Members by Status */}
             <div className="admin-card">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Répartition par statut</h3>
+              <h3 className="text-lg font-semibold text-white mb-6">Répartition par statut</h3>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPieChart>
