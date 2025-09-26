@@ -43,7 +43,7 @@ const CommunicationManagement: React.FC = () => {
       notification: 'bg-yellow-100 text-yellow-800',
       announcement: 'bg-green-100 text-green-800'
     };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[type as keyof typeof colors] || 'bg-white/10 text-white border border-white/20';
   };
 
   const getStatusColor = (status: string) => {
@@ -69,8 +69,8 @@ const CommunicationManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des communications</h1>
-          <p className="text-gray-600">Newsletters, notifications et annonces</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des communications</h1>
+          <p className="text-white/70">Newsletters, notifications et annonces</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -91,8 +91,8 @@ const CommunicationManagement: React.FC = () => {
               <Mail className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total envoyés</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Total envoyés</p>
+              <p className="text-2xl font-semibold text-white">
                 {communications.filter(c => c.status === 'sent').length}
               </p>
             </div>
@@ -105,8 +105,8 @@ const CommunicationManagement: React.FC = () => {
               <Users className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Destinataires</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Destinataires</p>
+              <p className="text-2xl font-semibold text-white">
                 {members.length}
               </p>
             </div>
@@ -119,8 +119,8 @@ const CommunicationManagement: React.FC = () => {
               <Calendar className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Programmés</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Programmés</p>
+              <p className="text-2xl font-semibold text-white">
                 {communications.filter(c => c.status === 'scheduled').length}
               </p>
             </div>
@@ -133,8 +133,8 @@ const CommunicationManagement: React.FC = () => {
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Taux d'ouverture</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Taux d'ouverture</p>
+              <p className="text-2xl font-semibold text-white">
                 {communications.length > 0 
                   ? Math.round(communications.reduce((acc, c) => acc + c.openRate, 0) / communications.length)
                   : 0}%
@@ -195,7 +195,7 @@ const CommunicationManagement: React.FC = () => {
               {filteredCommunications.map((comm) => (
                 <tr key={comm.id} className="hover:bg-gray-50">
                   <td>
-                    <div className="font-medium text-gray-900">{comm.title}</div>
+                    <div className="font-medium text-white">{comm.title}</div>
                   </td>
                   <td>
                     <span className={`admin-badge ${getTypeColor(comm.type)}`}>
@@ -209,12 +209,12 @@ const CommunicationManagement: React.FC = () => {
                   </td>
                   <td>
                     <div className="flex items-center space-x-1">
-                      <Users className="w-4 h-4 text-gray-400" />
+                      <Users className="w-4 h-4 text-white/60" />
                       <span>{comm.recipients.length}</span>
                     </div>
                   </td>
                   <td>
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-white">
                       {comm.status === 'sent' 
                         ? new Date(comm.sentAt).toLocaleDateString('fr-FR')
                         : comm.scheduledFor 

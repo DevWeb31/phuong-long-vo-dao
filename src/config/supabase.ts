@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 // Configuration pour les environnements
 const configs = {
   development: {
-    url: 'https://vdetbcyixkunrtfdvzcp.supabase.co',
+    url: import.meta.env.VITE_SUPABASE_URL_DEV || 'your_supabase_url_dev_here',
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY_DEV || 'your_anon_key_here',
     serviceRoleKey: import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY_DEV || 'your_service_role_key_here',
   },
   production: {
-    url: 'https://takhrcuzmecaerwwimpf.supabase.co',
+    url: import.meta.env.VITE_SUPABASE_URL_PROD || 'your_supabase_url_prod_here',
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY_PROD || 'your_anon_key_here',
     serviceRoleKey: import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY_PROD || 'your_service_role_key_here',
   },

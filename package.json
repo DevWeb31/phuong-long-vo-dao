@@ -35,7 +35,10 @@
     "db:api-create:prod": "VITE_APP_ENV=production node scripts/supabase-api-create.js",
     "db:final": "node scripts/final-solution.js",
     "db:final:dev": "VITE_APP_ENV=development node scripts/final-solution.js",
-    "db:final:prod": "VITE_APP_ENV=production node scripts/final-solution.js"
+    "db:final:prod": "VITE_APP_ENV=production node scripts/final-solution.js",
+    "auth:setup": "node scripts/setup-auth.js",
+    "auth:setup:dev": "VITE_APP_ENV=development node scripts/setup-auth.js",
+    "auth:setup:prod": "VITE_APP_ENV=production node scripts/setup-auth.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

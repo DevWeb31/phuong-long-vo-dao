@@ -96,8 +96,8 @@ const MemberManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des adhérents</h1>
-          <p className="text-gray-600">{filteredMembers.length} adhérent(s) trouvé(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des adhérents</h1>
+          <p className="text-white/70">{filteredMembers.length} adhérent(s) trouvé(s)</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -121,7 +121,7 @@ const MemberManagement: React.FC = () => {
       <div className="admin-card">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
             <input
               type="text"
               placeholder="Rechercher..."
@@ -180,20 +180,20 @@ const MemberManagement: React.FC = () => {
                 <tr key={member.id} className="hover:bg-gray-50">
                   <td>
                     <div>
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-white">
                         {member.firstName} {member.lastName}
                       </div>
-                      <div className="text-sm text-gray-500">{member.belt}</div>
+                      <div className="text-sm text-white/70">{member.belt}</div>
                     </div>
                   </td>
                   <td>
                     <div className="flex items-center space-x-2">
-                      <Mail className="w-4 h-4 text-gray-400" />
+                      <Mail className="w-4 h-4 text-white/60" />
                       <span className="text-sm">{member.email}</span>
                     </div>
                   </td>
                   <td>
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-white">
                       {getClubName(member.clubId)}
                     </span>
                   </td>
@@ -204,7 +204,7 @@ const MemberManagement: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-white">
                       {new Date(member.joinDate).toLocaleDateString('fr-FR')}
                     </span>
                   </td>
@@ -247,11 +247,11 @@ const MemberManagement: React.FC = () => {
         
         {filteredMembers.length === 0 && (
           <div className="text-center py-12">
-            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <Users className="w-12 h-12 text-white/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
               Aucun adhérent trouvé
             </h3>
-            <p className="text-gray-600">
+            <p className="text-white/70">
               Aucun adhérent ne correspond aux critères de recherche.
             </p>
           </div>
@@ -339,7 +339,7 @@ const MemberModal: React.FC<{
           <h3 className="text-lg font-semibold">
             {member ? 'Modifier l\'adhérent' : 'Ajouter un adhérent'}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
@@ -347,7 +347,7 @@ const MemberModal: React.FC<{
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Prénom *
               </label>
               <input
@@ -359,7 +359,7 @@ const MemberModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Nom *
               </label>
               <input
@@ -374,7 +374,7 @@ const MemberModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Email *
               </label>
               <input
@@ -386,7 +386,7 @@ const MemberModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Téléphone
               </label>
               <input
@@ -400,7 +400,7 @@ const MemberModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Club *
               </label>
               <select
@@ -416,7 +416,7 @@ const MemberModal: React.FC<{
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Statut
               </label>
               <select
@@ -430,7 +430,7 @@ const MemberModal: React.FC<{
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Type d'adhésion
               </label>
               <select
@@ -479,7 +479,7 @@ const MemberDetailModal: React.FC<{
           <h3 className="text-lg font-semibold">
             Détails de l'adhérent
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>

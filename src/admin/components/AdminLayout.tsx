@@ -56,7 +56,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-800 flex overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -68,16 +68,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/10 backdrop-blur-lg border-r border-white/20 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="flex items-center justify-between h-16 px-6 bg-red-600">
+        <div className="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-red-600 to-red-700 border-b border-white/20">
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg">
               <Zap className="w-5 h-5 text-red-900" />
             </div>
             <div className="text-white">
               <div className="font-bold text-sm">Admin Phuong Long</div>
+              <div className="text-xs text-yellow-200">Vo Dao</div>
             </div>
           </Link>
           <button
@@ -88,18 +89,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </button>
         </div>
 
-        <nav className="mt-8">
-          <div className="px-4 space-y-2">
+        <nav className="flex-1 mt-8 overflow-y-auto">
+          <div className="px-4 space-y-2 pb-4">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive(item.href)
-                      ? 'bg-red-50 text-red-700 border-r-2 border-red-600'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gradient-to-r from-yellow-400/20 to-red-500/20 text-white border-r-2 border-yellow-400 shadow-lg'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white hover:shadow-md'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -112,18 +113,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </nav>
 
         {/* User info and logout */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="flex-shrink-0 p-4 border-t border-white/20 bg-white/5">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-red-600 to-red-700 rounded-full flex items-center justify-center shadow-lg">
               <span className="text-white text-sm font-bold">
                 {user?.name.charAt(0)}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-white truncate">
                 {user?.name}
               </p>
-              <p className="text-xs text-gray-500 truncate">
+              <p className="text-xs text-yellow-200 truncate">
                 {user?.role === 'superadmin' ? 'Super Admin' : 
                  user?.role === 'admin' ? 'Administrateur' : 'Admin Club'}
               </p>
@@ -131,7 +132,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
           <button
             onClick={logout}
-            className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors"
+            className="flex items-center w-full px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white rounded-lg transition-all duration-200 hover:shadow-md"
           >
             <LogOut className="w-4 h-4 mr-3" />
             Déconnexion
@@ -140,18 +141,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        {/* Top bar */}
-        <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar - Fixe */}
+        <div className="flex-shrink-0 bg-white/10 backdrop-blur-lg border-b border-white/20 shadow-lg">
           <div className="flex items-center justify-between h-16 px-6">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-gray-600 hover:text-gray-900"
+                className="lg:hidden text-white/80 hover:text-white"
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-white/70">
                 Dernière connexion: {user?.lastLogin ? new Date(user.lastLogin).toLocaleString('fr-FR') : 'N/A'}
               </span>
             </div>
@@ -161,7 +162,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 href="/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm hover:shadow-md"
+                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                 title="Aller sur le site principal"
               >
                 <ExternalLink className="w-4 h-4" />
@@ -173,7 +174,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 {isMaintenanceMode ? (
                   <ShieldCheck className="w-4 h-4 text-orange-500" />
                 ) : (
-                  <Shield className="w-4 h-4 text-gray-400" />
+                  <Shield className="w-4 h-4 text-white/60" />
                 )}
                 <button
                   onClick={toggleMaintenanceMode}
@@ -189,7 +190,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     }`}
                   />
                 </button>
-                <span className="text-xs text-gray-600">
+                <span className="text-xs text-white/70">
                   {isLoading ? '...' : (isMaintenanceMode ? 'Maintenance' : 'Normal')}
                 </span>
               </div>
@@ -197,8 +198,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Page content */}
-        <main className="flex-1 p-6 overflow-hidden admin-one-page">
+        {/* Page content - Scrollable */}
+        <main className="flex-1 p-6 overflow-y-auto admin-content">
           {children}
         </main>
       </div>

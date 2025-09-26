@@ -67,7 +67,7 @@ const UserManagement: React.FC = () => {
       admin: 'bg-blue-100 text-blue-800',
       club_admin: 'bg-green-100 text-green-800'
     };
-    return colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[role as keyof typeof colors] || 'bg-white/10 text-white border border-white/20';
   };
 
   const handleDeleteUser = (id: string) => {
@@ -121,8 +121,8 @@ const UserManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des utilisateurs</h1>
-          <p className="text-gray-600">{filteredUsers.length} utilisateur(s) trouvé(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des utilisateurs</h1>
+          <p className="text-white/70">{filteredUsers.length} utilisateur(s) trouvé(s)</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -143,8 +143,8 @@ const UserManagement: React.FC = () => {
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Super Admins</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Super Admins</p>
+              <p className="text-2xl font-semibold text-white">
                 {users.filter(u => u.role === 'superadmin').length}
               </p>
             </div>
@@ -157,8 +157,8 @@ const UserManagement: React.FC = () => {
               <UserCog className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Administrateurs</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Administrateurs</p>
+              <p className="text-2xl font-semibold text-white">
                 {users.filter(u => u.role === 'admin').length}
               </p>
             </div>
@@ -171,8 +171,8 @@ const UserManagement: React.FC = () => {
               <UserCog className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Admins Club</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Admins Club</p>
+              <p className="text-2xl font-semibold text-white">
                 {users.filter(u => u.role === 'club_admin').length}
               </p>
             </div>
@@ -185,8 +185,8 @@ const UserManagement: React.FC = () => {
               <UserCog className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Actifs</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-white/80">Actifs</p>
+              <p className="text-2xl font-semibold text-white">
                 {users.filter(u => u.isActive).length}
               </p>
             </div>
@@ -198,7 +198,7 @@ const UserManagement: React.FC = () => {
       <div className="admin-card">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
             <input
               type="text"
               placeholder="Rechercher un utilisateur..."
@@ -245,8 +245,8 @@ const UserManagement: React.FC = () => {
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td>
                     <div>
-                      <div className="font-medium text-gray-900">{user.name}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="font-medium text-white">{user.name}</div>
+                      <div className="text-sm text-white/70">{user.email}</div>
                     </div>
                   </td>
                   <td>
@@ -255,7 +255,7 @@ const UserManagement: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-white">
                       {user.role === 'superadmin' ? (
                         <span className="text-red-600 font-medium">Tous les clubs</span>
                       ) : (
@@ -285,7 +285,7 @@ const UserManagement: React.FC = () => {
                     </div>
                   </td>
                   <td>
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-white">
                       {user.lastLogin 
                         ? new Date(user.lastLogin).toLocaleDateString('fr-FR')
                         : 'Jamais'
@@ -334,11 +334,11 @@ const UserManagement: React.FC = () => {
         
         {filteredUsers.length === 0 && (
           <div className="text-center py-12">
-            <UserCog className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <UserCog className="w-12 h-12 text-white/60 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
               Aucun utilisateur trouvé
             </h3>
-            <p className="text-gray-600">
+            <p className="text-white/70">
               Aucun utilisateur ne correspond aux critères sélectionnés.
             </p>
           </div>
@@ -444,7 +444,7 @@ const UserModal: React.FC<{
           <h3 className="text-lg font-semibold">
             {user ? 'Modifier l\'utilisateur' : 'Ajouter un utilisateur'}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
@@ -453,7 +453,7 @@ const UserModal: React.FC<{
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Nom complet *
               </label>
               <input
@@ -465,7 +465,7 @@ const UserModal: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Email *
               </label>
               <input
@@ -481,7 +481,7 @@ const UserModal: React.FC<{
           {/* Password */}
           {!user && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Mot de passe *
               </label>
               <div className="relative">
@@ -498,9 +498,9 @@ const UserModal: React.FC<{
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
+                    <EyeOff className="h-5 w-5 text-white/60" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
+                    <Eye className="h-5 w-5 text-white/60" />
                   )}
                 </button>
               </div>
@@ -577,7 +577,7 @@ const UserModal: React.FC<{
                 onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
                 className="rounded border-gray-300 text-red-600 focus:ring-red-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white/80">
                 Utilisateur actif
               </span>
             </label>

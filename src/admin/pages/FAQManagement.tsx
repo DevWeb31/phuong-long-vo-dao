@@ -72,8 +72,8 @@ const FAQManagement: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des FAQ</h1>
-          <p className="text-gray-600">{filteredFAQs.length} question(s) active(s)</p>
+          <h1 className="text-2xl font-bold text-white">Gestion des FAQ</h1>
+          <p className="text-white/70">{filteredFAQs.length} question(s) active(s)</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -93,10 +93,10 @@ const FAQManagement: React.FC = () => {
             <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <HelpCircle className="w-6 h-6 text-white" />
             </div>
-            <h3 className="font-medium text-gray-900 mb-1">
+            <h3 className="font-medium text-white mb-1">
               {getCategoryLabel(category)}
             </h3>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-white">
               {faqs.filter(f => f.category === category && f.isActive).length}
             </p>
           </div>
@@ -107,7 +107,7 @@ const FAQManagement: React.FC = () => {
       <div className="admin-card">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
             <input
               type="text"
               placeholder="Rechercher dans les FAQ..."
@@ -164,20 +164,20 @@ const FAQManagement: React.FC = () => {
                       {clubs.find(c => c.id === faq.clubId)?.name || 'Club'}
                     </span>
                   )}
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-white/60">
                     Ordre: {faq.order}
                   </span>
                 </div>
                 
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-white mb-2">
                   {faq.question}
                 </h3>
                 
-                <p className="text-gray-600 line-clamp-2">
+                <p className="text-white/70 line-clamp-2">
                   {faq.answer}
                 </p>
                 
-                <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
+                <div className="flex items-center space-x-4 mt-3 text-sm text-white/60">
                   <span>
                     Créé le {new Date(faq.createdAt).toLocaleDateString('fr-FR')}
                   </span>
@@ -192,7 +192,7 @@ const FAQManagement: React.FC = () => {
                   <button
                     onClick={() => handleReorder(faq.id, 'up')}
                     disabled={index === 0}
-                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-white/60 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Monter"
                   >
                     <ArrowUp className="w-4 h-4" />
@@ -200,7 +200,7 @@ const FAQManagement: React.FC = () => {
                   <button
                     onClick={() => handleReorder(faq.id, 'down')}
                     disabled={index === filteredFAQs.length - 1}
-                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-white/60 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Descendre"
                   >
                     <ArrowDown className="w-4 h-4" />
@@ -234,11 +234,11 @@ const FAQManagement: React.FC = () => {
 
       {filteredFAQs.length === 0 && (
         <div className="admin-card text-center py-12">
-          <HelpCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <HelpCircle className="w-12 h-12 text-white/60 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-white mb-2">
             Aucune FAQ trouvée
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-white/70 mb-4">
             Aucune FAQ ne correspond aux critères sélectionnés.
           </p>
           <button
@@ -321,14 +321,14 @@ const FAQModal: React.FC<{
           <h3 className="text-lg font-semibold">
             {faq ? 'Modifier la FAQ' : 'Créer une FAQ'}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-white/60 hover:text-white">
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Question *
             </label>
             <input
@@ -342,7 +342,7 @@ const FAQModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Réponse *
             </label>
             <textarea
@@ -357,7 +357,7 @@ const FAQModal: React.FC<{
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Catégorie *
               </label>
               <select
@@ -375,7 +375,7 @@ const FAQModal: React.FC<{
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Club (optionnel)
               </label>
               <select
@@ -391,7 +391,7 @@ const FAQModal: React.FC<{
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-white/80 mb-1">
                 Ordre d'affichage
               </label>
               <input
@@ -412,7 +412,7 @@ const FAQModal: React.FC<{
                 onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
                 className="rounded border-gray-300 text-red-600 focus:ring-red-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white/80">
                 FAQ active (visible sur le site)
               </span>
             </label>
