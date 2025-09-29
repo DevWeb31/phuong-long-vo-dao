@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     email TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('superadmin', 'admin', 'club_admin')),
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    is_deleted BOOLEAN NOT NULL DEFAULT false,
     last_login TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -33,6 +35,16 @@ CREATE TABLE IF NOT EXISTS public.clubs (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+-- Table de liaison accès des utilisateurs aux clubs
+CREATE TABLE IF NOT EXISTS public.user_club_access (
+    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    club_id UUID NOT NULL REFERENCES public.clubs(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    PRIMARY KEY (user_id, club_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_club_access_user_id ON public.user_club_access(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_club_access_club_id ON public.user_club_access(club_id);
 
 -- Table pour les adhérents/membres
 CREATE TABLE IF NOT EXISTS public.members (
@@ -102,6 +114,23 @@ CREATE TABLE IF NOT EXISTS public.faq (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Permissions (normalisées)
+CREATE TABLE IF NOT EXISTS public.permissions (
+    id TEXT PRIMARY KEY,
+    label TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.user_permissions (
+    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    permission_id TEXT NOT NULL REFERENCES public.permissions(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    PRIMARY KEY (user_id, permission_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_permissions_user_id ON public.user_permissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_permissions_permission_id ON public.user_permissions(permission_id);
+
 -- Index pour améliorer les performances
 CREATE INDEX IF NOT EXISTS idx_maintenance_created_at ON public.maintenance(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_members_club_id ON public.members(club_id);
@@ -121,6 +150,9 @@ ALTER TABLE public.events DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.communications DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.media DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.faq DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_club_access DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.permissions DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_permissions DISABLE ROW LEVEL SECURITY;
 
 -- Données initiales
 INSERT INTO public.clubs (name, city, department, member_count) VALUES
@@ -133,6 +165,21 @@ INSERT INTO public.faq (question, answer, category, order_index) VALUES
 ('Comment s''inscrire ?', 'Vous pouvez vous inscrire directement au club ou nous contacter par téléphone.', 'inscription', 2),
 ('Quel équipement faut-il ?', 'Un kimono blanc et une ceinture blanche pour débuter.', 'equipement', 3)
 ON CONFLICT DO NOTHING;
+
+-- Permissions seed
+INSERT INTO public.permissions (id, label) VALUES
+('members', 'Gestion des adhérents'),
+('clubs', 'Gestion des clubs'),
+('content', 'Gestion des contenus'),
+('events', 'Gestion des événements'),
+('communications', 'Communications'),
+('media', 'Gestion des médias'),
+('faq', 'Gestion des FAQ'),
+('users', 'Gestion des utilisateurs'),
+('reports', 'Rapports'),
+('settings', 'Paramètres'),
+('all', 'Tous les droits')
+ON CONFLICT (id) DO NOTHING;
 
 -- Message de confirmation
 SELECT 'Tables créées avec succès !' as message;

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '../../config/supabase';
+import { supabase, supabaseAdmin } from '../../config/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
 export interface AdminUser {
@@ -172,6 +172,10 @@ interface AdminContextType {
   // Auth methods
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
+  showPasswordChangeModal: boolean;
+  isFirstLoginModal: boolean;
+  updatePassword: (newPassword: string) => Promise<void>;
+  dismissPasswordChangeModal: () => void;
   
   // Member methods
   getMembers: (clubId?: string) => Member[];
@@ -221,6 +225,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
+  const [isFirstLoginModal, setIsFirstLoginModal] = useState(false);
 
   // Initialize mock data
   useEffect(() => {
@@ -340,22 +346,60 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           return;
         }
 
+        if (userData.is_active === false) {
+          console.warn('Compte administrateur inactif, déconnexion de la session');
+          await supabase.auth.signOut();
+          setUser(null);
+          localStorage.removeItem('adminUser');
+          localStorage.removeItem('adminToken');
+          setSessionRestored(true);
+          return;
+        }
+
+        // Vérifier si c'est la première connexion (pas de last_login)
+        const isFirstLogin = !userData.last_login;
+        
+        // Vérifier si l'utilisateur doit changer son mot de passe (mot de passe temporaire)
+        const needsPasswordChange = !userData.last_login;
+
+        // Récupérer les accès clubs et permissions depuis la base de données
+        const [clubAccessResult, permissionsResult] = await Promise.all([
+          supabase
+            .from('user_club_access')
+            .select('club_id')
+            .eq('user_id', userData.id),
+          supabase
+            .from('user_permissions')
+            .select('permission_id')
+            .eq('user_id', userData.id)
+        ]);
+
+        const clubAccess = clubAccessResult.data?.map(row => row.club_id) || [];
+        const permissions = permissionsResult.data?.map(row => row.permission_id) || [];
+
         // Créer l'objet utilisateur admin
         const adminUser: AdminUser = {
           id: session.user.id,
           email: session.user.email || '',
           name: userData.name,
           role: userData.role,
-          clubAccess: ['montaigut', 'tregeux', 'lanester', 'cublize', 'wimille'],
-          permissions: ['all'],
-          lastLogin: new Date().toISOString(),
-          isActive: userData.role !== 'inactive'
+          clubAccess,
+          permissions,
+          lastLogin: userData.last_login || new Date().toISOString(),
+          isActive: userData.is_active === true
         };
 
         setUser(adminUser);
         localStorage.setItem('adminUser', JSON.stringify(adminUser));
         localStorage.setItem('adminToken', session.access_token);
         setSessionRestored(true);
+
+        // Si l'utilisateur doit changer son mot de passe (première connexion ou mot de passe temporaire),
+        // afficher le modal de changement de mot de passe
+        if (needsPasswordChange) {
+          setShowPasswordChangeModal(true);
+          setIsFirstLoginModal(true);
+        }
         
         console.log('Session restaurée avec succès');
       } else {
@@ -409,27 +453,72 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           return { success: false, error: 'Utilisateur non autorisé' };
         }
 
+        if (userData.is_active === false) {
+          await supabase.auth.signOut();
+          return { success: false, error: 'Compte inactif. Contactez un administrateur.' };
+        }
+
+        // Vérifier si c'est la première connexion (pas de last_login)
+        const isFirstLogin = !userData.last_login;
+        
+        // Vérifier si l'utilisateur doit changer son mot de passe (mot de passe temporaire)
+        // On considère qu'un utilisateur restauré récemment avec un mot de passe temporaire
+        // doit le changer s'il n'a pas encore de last_login après restauration
+        const needsPasswordChange = !userData.last_login;
+        
+        // Debug: afficher les informations de connexion
+        console.log('DEBUG CONNEXION:', {
+          email: email,
+          lastLogin: userData.last_login,
+          isFirstLogin,
+          needsPasswordChange,
+          userData: userData
+        });
+
+        // Récupérer les accès clubs et permissions depuis la base de données
+        const [clubAccessResult, permissionsResult] = await Promise.all([
+          supabase
+            .from('user_club_access')
+            .select('club_id')
+            .eq('user_id', userData.id),
+          supabase
+            .from('user_permissions')
+            .select('permission_id')
+            .eq('user_id', userData.id)
+        ]);
+
+        const clubAccess = clubAccessResult.data?.map(row => row.club_id) || [];
+        const permissions = permissionsResult.data?.map(row => row.permission_id) || [];
+
         // Créer l'objet utilisateur admin
         const adminUser: AdminUser = {
           id: data.user.id,
           email: data.user.email || email,
           name: userData.name,
           role: userData.role,
-          clubAccess: ['montaigut', 'tregeux', 'lanester', 'cublize', 'wimille'], // TODO: Récupérer depuis la DB
-          permissions: ['all'], // TODO: Récupérer depuis la DB
-          lastLogin: new Date().toISOString(),
-          isActive: userData.role !== 'inactive'
+          clubAccess,
+          permissions,
+          lastLogin: userData.last_login || new Date().toISOString(),
+          isActive: userData.is_active === true
         };
 
         setUser(adminUser);
         localStorage.setItem('adminUser', JSON.stringify(adminUser));
         localStorage.setItem('adminToken', data.session?.access_token || '');
 
-        // Mettre à jour la dernière connexion dans la DB
-        await supabase
-          .from('users')
-          .update({ last_login: new Date().toISOString() })
-          .eq('email', email);
+        // Si l'utilisateur doit changer son mot de passe (première connexion ou mot de passe temporaire),
+        // afficher le modal de changement de mot de passe
+        // et ne pas mettre à jour last_login tant que le mot de passe n'est pas changé
+        if (needsPasswordChange) {
+          setShowPasswordChangeModal(true);
+          setIsFirstLoginModal(true);
+        } else {
+          // Mettre à jour la dernière connexion dans la DB seulement si l'utilisateur n'a pas besoin de changer son mot de passe
+          await supabase
+            .from('users')
+            .update({ last_login: new Date().toISOString() })
+            .eq('email', email);
+        }
 
         // Ajouter à l'historique d'activité
         const loginActivity: ActivityLog = {
@@ -667,6 +756,54 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       activityLogs,
       login,
       logout,
+      showPasswordChangeModal,
+      isFirstLoginModal,
+      updatePassword: async (newPassword: string) => {
+        if (!user) return;
+        
+        try {
+          // Mettre à jour le mot de passe dans Supabase Auth
+          const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(
+            user.id,
+            { password: newPassword }
+          );
+          
+          if (authError) {
+            throw authError;
+          }
+          
+          // Mettre à jour last_login dans la table users (utiliser email car les IDs peuvent différer)
+          const { error: dbError } = await supabase
+            .from('users')
+            .update({ last_login: new Date().toISOString() })
+            .eq('email', user.email);
+            
+          if (dbError) {
+            console.error('Erreur lors de la mise à jour de last_login:', dbError);
+            throw dbError;
+          }
+          
+          console.log('last_login mis à jour avec succès pour:', user.email);
+          
+          // Fermer le modal et réinitialiser l'état
+          setShowPasswordChangeModal(false);
+          setIsFirstLoginModal(false);
+          
+          // Mettre à jour l'objet utilisateur avec la nouvelle date de connexion
+          const updatedUser = { ...user, lastLogin: new Date().toISOString() };
+          setUser(updatedUser);
+          localStorage.setItem('adminUser', JSON.stringify(updatedUser));
+          
+          console.log('Mot de passe mis à jour avec succès');
+        } catch (error) {
+          console.error('Erreur lors de la mise à jour du mot de passe:', error);
+          throw error;
+        }
+      },
+      dismissPasswordChangeModal: () => {
+        setShowPasswordChangeModal(false);
+        setIsFirstLoginModal(false);
+      },
       getMembers,
       addMember,
       updateMember,
