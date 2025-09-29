@@ -33,6 +33,8 @@ export interface Database {
           email: string;
           name: string;
           role: 'superadmin' | 'admin' | 'club_admin';
+          is_active: boolean;
+          is_deleted: boolean;
           last_login: string | null;
           created_at: string;
           updated_at: string;
@@ -42,6 +44,8 @@ export interface Database {
           email: string;
           name: string;
           role?: 'superadmin' | 'admin' | 'club_admin';
+          is_active?: boolean;
+          is_deleted?: boolean;
           last_login?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -51,6 +55,8 @@ export interface Database {
           email?: string;
           name?: string;
           role?: 'superadmin' | 'admin' | 'club_admin';
+          is_active?: boolean;
+          is_deleted?: boolean;
           last_login?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -86,6 +92,57 @@ export interface Database {
           member_count?: number;
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      user_club_access: {
+        Row: {
+          user_id: string;
+          club_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          club_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          club_id?: string;
+          created_at?: string;
+        };
+      };
+      permissions: {
+        Row: {
+          id: string;
+          label: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          label: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          label?: string;
+          created_at?: string;
+        };
+      };
+      user_permissions: {
+        Row: {
+          user_id: string;
+          permission_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          permission_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          permission_id?: string;
+          created_at?: string;
         };
       };
     };

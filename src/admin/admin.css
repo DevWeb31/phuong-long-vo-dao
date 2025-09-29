@@ -113,9 +113,17 @@
 }
 
 .admin-modal-overlay {
-  @apply fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50;
+  @apply fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto z-50;
+  height: 100vh !important;
+  width: 100vw !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
 }
 
 .admin-modal {
-  @apply relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white;
+  @apply relative mx-auto p-6 border w-11/12 md:w-3/4 lg:w-1/2 shadow-2xl rounded-xl bg-gray-900/95 text-white border-white/20 backdrop-blur-xl;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
 }
