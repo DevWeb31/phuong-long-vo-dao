@@ -42,10 +42,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { name: 'Communications', href: '/communications', icon: Mail },
     { name: 'Médias', href: '/media', icon: Image },
     { name: 'FAQ', href: '/faq', icon: HelpCircle },
-    { name: 'Utilisateurs', href: '/users', icon: UserCog },
+    { name: 'Utilisateurs', href: '/users', icon: UserCog, permission: 'users' },
     { name: 'Rapports', href: '/reports', icon: BarChart3 },
     { name: 'Paramètres', href: '/settings', icon: Settings },
   ];
+
+  // Filtrer les éléments de navigation selon les permissions
+  const filteredNavigation = navigation.filter(item => {
+    if (item.permission) {
+      return user?.permissions?.includes(item.permission) || user?.permissions?.includes('all');
+    }
+    return true;
+  });
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -91,7 +99,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
         <nav className="flex-1 mt-8 overflow-y-auto">
           <div className="px-4 space-y-2 pb-4">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
