@@ -33,6 +33,37 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { isMaintenanceMode, isLoading, toggleMaintenanceMode } = useMaintenance();
   const location = useLocation();
 
+  // Fonction pour obtenir le titre de la page actuelle
+  const getPageTitle = () => {
+    const currentPath = location.pathname;
+    switch (currentPath) {
+      case '/':
+        return 'Dashboard';
+      case '/members':
+        return 'Gestion des adhérents';
+      case '/clubs':
+        return 'Gestion des clubs';
+      case '/content':
+        return 'Gestion des contenus';
+      case '/events':
+        return 'Gestion des événements';
+      case '/communications':
+        return 'Gestion des communications';
+      case '/media':
+        return 'Gestion des médias';
+      case '/faq':
+        return 'Gestion des FAQ';
+      case '/users':
+        return 'Gestion des utilisateurs';
+      case '/reports':
+        return 'Rapports';
+      case '/settings':
+        return 'Paramètres';
+      default:
+        return '';
+    }
+  };
+
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Adhérents', href: '/members', icon: Users },
@@ -160,6 +191,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               >
                 <Menu className="w-6 h-6" />
               </button>
+              {getPageTitle() && (
+                <h1 className="text-xl font-bold text-white">
+                  {getPageTitle()}
+                </h1>
+              )}
               <span className="text-sm text-white/70">
                 Dernière connexion: {user?.lastLogin ? new Date(user.lastLogin).toLocaleString('fr-FR') : 'N/A'}
               </span>

@@ -107,8 +107,10 @@ CREATE TABLE IF NOT EXISTS public.faq (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     category TEXT NOT NULL DEFAULT 'general',
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE, -- NULL pour FAQ générales
     order_index INTEGER DEFAULT 0,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -121,6 +123,8 @@ CREATE INDEX IF NOT EXISTS idx_events_date ON public.events(date);
 CREATE INDEX IF NOT EXISTS idx_events_club_id ON public.events(club_id);
 CREATE INDEX IF NOT EXISTS idx_media_category ON public.media(category);
 CREATE INDEX IF NOT EXISTS idx_faq_category ON public.faq(category);
+CREATE INDEX IF NOT EXISTS idx_faq_club_id ON public.faq(club_id);
+CREATE INDEX IF NOT EXISTS idx_faq_created_by ON public.faq(created_by);
 
 -- Désactiver RLS (Row Level Security) pour simplifier
 ALTER TABLE public.maintenance DISABLE ROW LEVEL SECURITY;
