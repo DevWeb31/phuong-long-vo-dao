@@ -15,7 +15,9 @@ import {
   Info,
   Phone,
   Mail,
-  Sword
+  Sword,
+  Filter as FilterIcon,
+  Users
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import { supabase, supabaseAdmin } from '../../config/supabase';
@@ -560,12 +562,8 @@ const UserManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Gestion des utilisateurs</h1>
-          <p className="text-white/70">{filteredUsers.length} utilisateur(s) trouvé(s)</p>
-        </div>
+      {/* Actions */}
+      <div className="flex justify-end">
         <div className="flex space-x-3">
           {activeTab === 'active' && (
             <button
@@ -579,102 +577,75 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
 
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="admin-card">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-red-500">
-              <Shield className="w-6 h-6 text-white" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-white/80">Super Admins</p>
-              <p className="text-2xl font-semibold text-white">
-                {users.filter(u => u.role === 'superadmin').length}
-              </p>
-            </div>
-          </div>
+      {/* Mini cartes d'informations */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="bg-white/5 rounded-lg p-3 text-center">
+          <p className="text-lg font-bold text-white">{users.length}</p>
+          <p className="text-xs text-white/60">Total</p>
         </div>
-
-        <div className="admin-card">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-blue-500">
-              <UserCog className="w-6 h-6 text-white" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-white/80">Administrateurs</p>
-              <p className="text-2xl font-semibold text-white">
-                {users.filter(u => u.role === 'admin').length}
-              </p>
-            </div>
-          </div>
+        <div className="bg-white/5 rounded-lg p-3 text-center">
+          <p className="text-lg font-bold text-green-400">{users.filter(u => u.isActive).length}</p>
+          <p className="text-xs text-white/60">Actifs</p>
         </div>
-
-        <div className="admin-card">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-green-500">
-              <UserCog className="w-6 h-6 text-white" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-white/80">Admins Club</p>
-              <p className="text-2xl font-semibold text-white">
-                {users.filter(u => u.role === 'club_admin').length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="admin-card">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-yellow-500">
-              <UserCog className="w-6 h-6 text-white" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-white/80">Actifs</p>
-              <p className="text-2xl font-semibold text-white">
-                {users.filter(u => u.isActive).length}
-              </p>
-            </div>
-          </div>
+        <div className="bg-white/5 rounded-lg p-3 text-center">
+          <p className="text-lg font-bold text-orange-400">{users.filter(u => !u.isActive).length}</p>
+          <p className="text-xs text-white/60">Inactifs</p>
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Filtres */}
       <div className="admin-card">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Rechercher un utilisateur..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10"
-            />
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-2">
+              Recherche
+            </label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Rechercher un utilisateur..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-input pl-10 w-full"
+              />
+            </div>
           </div>
           
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="admin-input"
-          >
-            <option value="">Tous les rôles</option>
-            <option value="superadmin">Super Administrateur</option>
-            <option value="admin">Administrateur</option>
-            <option value="club_admin">Admin Club</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-2">
+              Rôle
+            </label>
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="admin-input w-full"
+            >
+              <option value="">Tous les rôles</option>
+              <option value="superadmin">Super Administrateur</option>
+              <option value="admin">Administrateur</option>
+              <option value="club_admin">Admin Club</option>
+            </select>
+          </div>
           
-          <select
-            value={clubFilter}
-            onChange={(e) => setClubFilter(e.target.value)}
-            className="admin-input"
-          >
-            <option value="">Tous les clubs</option>
-            {Object.entries(dbClubsById).map(([clubId, clubName]) => (
-              <option key={clubId} value={clubId}>{clubName}</option>
-            ))}
-          </select>
-          
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-2">
+              Club
+            </label>
+            <select
+              value={clubFilter}
+              onChange={(e) => setClubFilter(e.target.value)}
+              className="admin-input w-full"
+            >
+              <option value="">Tous les clubs</option>
+              {Object.entries(dbClubsById).map(([clubId, clubName]) => (
+                <option key={clubId} value={clubId}>{clubName}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="mt-3 text-sm text-white/60">
+          <span>{filteredUsers.length} {filteredUsers.length <= 1 ? 'utilisateur trouvé' : 'utilisateurs trouvés'}</span>
         </div>
       </div>
 
