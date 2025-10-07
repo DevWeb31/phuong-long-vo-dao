@@ -19,6 +19,7 @@ import {
   
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import AdminTable from '../components/AdminTable';
 import PlusActionsMenu from '../components/PlusActionsMenu';
 import { supabase, supabaseAdmin } from '../../config/supabase';
 import toast from 'react-hot-toast';
@@ -172,13 +173,15 @@ const UserManagement: React.FC = () => {
     loadUsers(activeTab === 'deleted');
   }, [activeTab]);
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = !roleFilter || user.role === roleFilter;
-    const matchesClub = !clubFilter || user.clubAccess.includes(clubFilter) || user.role === 'superadmin';
-    return matchesSearch && matchesRole && matchesClub;
-  });
+  const filteredUsers = users
+    .filter(user => {
+      const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesRole = !roleFilter || user.role === roleFilter;
+      const matchesClub = !clubFilter || user.clubAccess.includes(clubFilter) || user.role === 'superadmin';
+      return matchesSearch && matchesRole && matchesClub;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
 
   const getRoleLabel = (role: string) => {
     const labels = {
@@ -590,61 +593,7 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Filtres */}
-      <div className="admin-card py-3">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-1">
-              Recherche
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Rechercher un utilisateur..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-input pl-10 w-full h-9"
-              />
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-1">
-              Rôle
-            </label>
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="admin-input w-full h-9"
-            >
-              <option value="">Tous les rôles</option>
-              <option value="superadmin">Super Administrateur</option>
-              <option value="admin">Administrateur</option>
-              <option value="club_admin">Admin Club</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-1">
-              Club
-            </label>
-            <select
-              value={clubFilter}
-              onChange={(e) => setClubFilter(e.target.value)}
-              className="admin-input w-full h-9"
-            >
-              <option value="">Tous les clubs</option>
-              {Object.entries(dbClubsById).map(([clubId, clubName]) => (
-                <option key={clubId} value={clubId}>{clubName}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="mt-2 text-sm text-white/60">
-          <span>{filteredUsers.length} {filteredUsers.length <= 1 ? 'utilisateur trouvé' : 'utilisateurs trouvés'}</span>
-        </div>
-      </div>
+      {/* Résumé supprimé: déplacé dans le footer du tableau */}
 
 
       {/* Tabs */}
@@ -708,48 +657,83 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* Users Table */}
-      <div className="admin-card overflow-hidden">
-        {loading && (
-          <div className="p-2" />
+      <AdminTable
+        headers={[
+          'Utilisateur',
+          '',
+          'Rôle',
+          'Accès clubs',
+          <span key="statut" className="text-center block">Statut</span>,
+          <span key="actions" className="text-right block">Actions</span>
+        ]}
+        loading={loading}
+        filtersContent={(
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">Rôle</label>
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="admin-input w-full"
+              >
+                <option value="">Tous les rôles</option>
+                <option value="superadmin">Super Administrateur</option>
+                <option value="admin">Administrateur</option>
+                <option value="club_admin">Admin Club</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">Club</label>
+              <select
+                value={clubFilter}
+                onChange={(e) => setClubFilter(e.target.value)}
+                className="admin-input w-full"
+              >
+                <option value="">Tous les clubs</option>
+                {Object.entries(dbClubsById).map(([clubId, clubName]) => (
+                  <option key={clubId} value={clubId}>{clubName}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         )}
-        {error && !loading && (
-          <div className="text-center py-4 text-red-400">{error}</div>
+        footerLeft={(
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Rechercher un utilisateur..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-input pl-10 h-9 w-64"
+              />
+            </div>
+            <div className="h-6 w-px bg-white/20"></div>
+            <span className="text-sm text-white/70">{filteredUsers.length} {filteredUsers.length <= 1 ? 'utilisateur trouvé' : 'utilisateurs trouvés'}</span>
+            <>
+              <div className="h-6 w-px bg-white/20"></div>
+              <div className="flex items-center gap-2 text-xs text-white/60">
+                <span className="px-2 py-1 bg-white/10 rounded border border-white/20">
+                  Rôle: {roleFilter ? (roleFilter === 'superadmin' ? 'Super Admin' : roleFilter === 'admin' ? 'Administrateur' : 'Admin Club') : 'Tous les rôles'}
+                </span>
+                <span className="px-2 py-1 bg-white/10 rounded border border-white/20">
+                  Club: {clubFilter ? (dbClubsById[clubFilter] || clubFilter) : 'Tous les clubs'}
+                </span>
+              </div>
+            </>
+          </div>
         )}
-        <div className="overflow-x-auto">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Utilisateur</th>
-                <th className="text-center"></th>
-                <th>Rôle</th>
-                <th>Accès clubs</th>
-                <th className="text-center">Statut</th>
-                <th>Dernière connexion</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {loading ? (
-                Array.from({ length: 8 }).map((_, rowIdx) => (
-                  <tr key={`skeleton-${rowIdx}`} className="hover:bg-white/5">
-                    {Array.from({ length: 7 }).map((__, colIdx) => (
-                      <td key={colIdx} className="px-4 py-4">
-                        <div className={`h-3 rounded animate-pulse ${colIdx === 0 ? 'w-40' : colIdx === 3 ? 'w-24' : 'w-20'} bg-white/10`} />
-                        {colIdx === 0 && (
-                          <div className="mt-2 h-2 w-24 bg-white/5 rounded animate-pulse" />
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
-              filteredUsers.map((user) => (
-                <tr 
-                  key={user.id} 
-                  className="hover:bg-white/10 transition-colors duration-200 cursor-pointer"
-                  onClick={() => handleViewUser(user)}
-                >
-                  <td>
+        bodyHeightClass="h-[calc(100vh-300px)]"
+        wrapperMaxHeightClass="max-h-[calc(100vh-260px)]"
+      >
+        {filteredUsers.map((user) => (
+          <tr 
+            key={user.id} 
+            className="hover:bg-white/10 transition-colors duration-200 cursor-pointer"
+            onClick={() => handleViewUser(user)}
+          >
+            <td>
                     <div>
                       <div className="font-medium text-white flex items-center space-x-2">
                         <div className="relative group">
@@ -773,9 +757,9 @@ const UserManagement: React.FC = () => {
                         </div>
                       )}
                     </div>
-                  </td>
-                  <td className="text-center">
-                    <div className="flex items-center justify-center space-x-2">
+            </td>
+            <td className="text-right">
+                    <div className="flex items-center justify-end space-x-2 ml-auto">
                       {/* Icône Email */}
                       <div className="relative group">
                         <a 
@@ -793,9 +777,9 @@ const UserManagement: React.FC = () => {
                         </div>
                       </div>
                       
-                      {/* Icône Téléphone */}
-                      <div className="relative group">
-                        {user.user_phone ? (
+                      {/* Icône Téléphone - affichée seulement si numéro présent */}
+                      {user.user_phone && (
+                        <div className="relative group">
                           <a 
                             href={`tel:${user.user_phone.replace(/\s/g, '')}`}
                             onClick={(e) => e.stopPropagation()}
@@ -804,25 +788,21 @@ const UserManagement: React.FC = () => {
                           >
                             <Phone className="w-4 h-4 text-blue-400 hover:text-blue-300 cursor-pointer transition-colors duration-200" />
                           </a>
-                        ) : (
-                          <Phone className="w-4 h-4 text-white/30" />
-                        )}
-                        {/* Tooltip */}
-                        {user.user_phone && (
+                          {/* Tooltip */}
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 border border-white/20">
                             Cliquer pour appeler : {user.user_phone}
                             <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  </td>
-                  <td>
+            </td>
+            <td>
                     <span className={`admin-badge ${getRoleColor(user.role)}`}>
                       {getRoleLabel(user.role)}
                     </span>
-                  </td>
-                  <td>
+            </td>
+            <td>
                     <div className="text-sm text-white/80">
                       {user.role === 'superadmin' || user.clubAccess.length === Object.keys(dbClubsById).length ? (
                         <span className="text-blue-400 font-medium">Tous les clubs</span>
@@ -836,8 +816,8 @@ const UserManagement: React.FC = () => {
                         </div>
                       )}
                     </div>
-                  </td>
-                  <td className="text-center">
+            </td>
+            <td className="text-center">
                     <div className="relative group flex justify-center items-center">
                       <div className={`w-3 h-3 rounded-full ${
                         user.isActive ? 'bg-green-500' : 'bg-red-500'
@@ -848,24 +828,9 @@ const UserManagement: React.FC = () => {
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                       </div>
                     </div>
-                  </td>
-                  <td>
-                    <span className="text-sm text-white">
-                      {user.lastLogin 
-                        ? new Date(user.lastLogin).toLocaleString('fr-FR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
-                          })
-                        : 'Jamais'
-                      }
-                    </span>
-                  </td>
-                  <td>
-                    <div className="flex items-center space-x-2">
+            </td>
+            <td className="text-right">
+                    <div className="flex items-center justify-end space-x-2">
                       {activeTab === 'active' && (
                         <>
                       <button
@@ -949,13 +914,10 @@ const UserManagement: React.FC = () => {
                         </>
                       )}
                     </div>
-                  </td>
-                </tr>
-              ))
-              )}
-            </tbody>
-          </table>
-        </div>
+            </td>
+          </tr>
+        ))}
+      </AdminTable>
         
         {!loading && !error && users.length === 0 && activeTab === 'active' && (
           <div className="text-center py-12">
@@ -997,7 +959,6 @@ const UserManagement: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
 
       {/* Create/Edit User Modal */}
       {showCreateModal && (
@@ -1012,6 +973,7 @@ const UserManagement: React.FC = () => {
           onSave={handleSaveUser}
         />
       )}
+
 
       {/* Modal de confirmation de suppression */}
       {showDeleteModal && userToDelete && (
