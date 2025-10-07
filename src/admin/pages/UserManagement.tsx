@@ -15,11 +15,11 @@ import {
   Info,
   Phone,
   Mail,
-  Sword,
-  Filter as FilterIcon,
-  Users
+  
+  
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import PlusActionsMenu from '../components/PlusActionsMenu';
 import { supabase, supabaseAdmin } from '../../config/supabase';
 import toast from 'react-hot-toast';
 
@@ -562,42 +562,39 @@ const UserManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Actions */}
-      <div className="flex justify-end">
-        <div className="flex space-x-3">
-          {activeTab === 'active' && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="admin-button-primary flex items-center space-x-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Ajouter un utilisateur</span>
-            </button>
-          )}
+      {/* En-tête: bouton + à gauche | séparateur | cartes info à droite */}
+      <div className="flex items-stretch justify-between">
+        <div className="flex items-stretch">
+          <PlusActionsMenu
+            buttonTitle="Actions Utilisateurs"
+            buttonClassName="h-12"
+            actions={[
+              ...(activeTab === 'active' ? [{ label: 'Ajouter un utilisateur', onClick: () => setShowCreateModal(true) }] : []),
+            ]}
+          />
+          <div className="self-center h-6 w-px bg-white/20 mx-4" />
         </div>
-      </div>
-
-      {/* Mini cartes d'informations */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-white">{users.length}</p>
-          <p className="text-xs text-white/60">Total</p>
-        </div>
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-green-400">{users.filter(u => u.isActive).length}</p>
-          <p className="text-xs text-white/60">Actifs</p>
-        </div>
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-orange-400">{users.filter(u => !u.isActive).length}</p>
-          <p className="text-xs text-white/60">Inactifs</p>
+        <div className="flex-1 flex items-stretch space-x-3">
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-white leading-none">{users.length}</p>
+            <p className="text-xs text-white/60 mt-0.5">Total</p>
+          </div>
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-green-400 leading-none">{users.filter(u => u.isActive).length}</p>
+            <p className="text-xs text-white/60 mt-0.5">Actifs</p>
+          </div>
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-orange-400 leading-none">{users.filter(u => !u.isActive).length}</p>
+            <p className="text-xs text-white/60 mt-0.5">Inactifs</p>
+          </div>
         </div>
       </div>
 
       {/* Filtres */}
-      <div className="admin-card">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="admin-card py-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Recherche
             </label>
             <div className="relative">
@@ -607,19 +604,19 @@ const UserManagement: React.FC = () => {
                 placeholder="Rechercher un utilisateur..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-input pl-10 w-full"
+                className="admin-input pl-10 w-full h-9"
               />
             </div>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Rôle
             </label>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="admin-input w-full"
+              className="admin-input w-full h-9"
             >
               <option value="">Tous les rôles</option>
               <option value="superadmin">Super Administrateur</option>
@@ -629,13 +626,13 @@ const UserManagement: React.FC = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="block text-sm font-medium text-white/80 mb-1">
               Club
             </label>
             <select
               value={clubFilter}
               onChange={(e) => setClubFilter(e.target.value)}
-              className="admin-input w-full"
+              className="admin-input w-full h-9"
             >
               <option value="">Tous les clubs</option>
               {Object.entries(dbClubsById).map(([clubId, clubName]) => (
@@ -644,7 +641,7 @@ const UserManagement: React.FC = () => {
             </select>
           </div>
         </div>
-        <div className="mt-3 text-sm text-white/60">
+        <div className="mt-2 text-sm text-white/60">
           <span>{filteredUsers.length} {filteredUsers.length <= 1 ? 'utilisateur trouvé' : 'utilisateurs trouvés'}</span>
         </div>
       </div>
@@ -713,13 +710,7 @@ const UserManagement: React.FC = () => {
       {/* Users Table */}
       <div className="admin-card overflow-hidden">
         {loading && (
-          <div className="py-16 flex flex-col items-center justify-center space-y-4">
-            <div className="relative w-16 h-16">
-              <Sword className="w-8 h-8 text-red-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45 animate-bounce" />
-              <Sword className="w-8 h-8 text-white/70 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 animate-bounce [animation-delay:150ms]" />
-            </div>
-            <div className="text-white/80">Préparation du dojo…</div>
-          </div>
+          <div className="p-2" />
         )}
         {error && !loading && (
           <div className="text-center py-4 text-red-400">{error}</div>
@@ -738,7 +729,21 @@ const UserManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {filteredUsers.map((user) => (
+              {loading ? (
+                Array.from({ length: 8 }).map((_, rowIdx) => (
+                  <tr key={`skeleton-${rowIdx}`} className="hover:bg-white/5">
+                    {Array.from({ length: 7 }).map((__, colIdx) => (
+                      <td key={colIdx} className="px-4 py-4">
+                        <div className={`h-3 rounded animate-pulse ${colIdx === 0 ? 'w-40' : colIdx === 3 ? 'w-24' : 'w-20'} bg-white/10`} />
+                        {colIdx === 0 && (
+                          <div className="mt-2 h-2 w-24 bg-white/5 rounded animate-pulse" />
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+              filteredUsers.map((user) => (
                 <tr 
                   key={user.id} 
                   className="hover:bg-white/10 transition-colors duration-200 cursor-pointer"
@@ -946,7 +951,8 @@ const UserManagement: React.FC = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

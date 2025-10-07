@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import toast from 'react-hot-toast';
+import PlusActionsMenu from '../components/PlusActionsMenu';
 
 const FAQManagement: React.FC = () => {
   const { faqs, clubs, users, addFAQ, updateFAQ, deleteFAQ, getAccessibleFAQs, canEditFAQ, user } = useAdmin();
@@ -365,63 +366,34 @@ const FAQManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Actions */}
-      <div className="flex justify-end">
-        <div className="flex space-x-3">
-          <button
-            onClick={() => setShowImportModal(true)}
-            className="admin-button-secondary flex items-center space-x-2"
-          >
-            <Upload className="w-4 h-4" />
-            <span>Importer</span>
-          </button>
-          
-          <div className="relative group">
-            <button className="admin-button-secondary flex items-center space-x-2">
-              <Download className="w-4 h-4" />
-              <span>Exporter</span>
-            </button>
-            <div className="absolute right-0 top-full mt-2 w-48 bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-              <div className="py-2">
-                <button
-                  onClick={() => handleExportFAQs('csv')}
-                  className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
-                >
-                  Exporter en CSV
-                </button>
-                <button
-                  onClick={() => handleExportFAQs('json')}
-                  className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
-                >
-                  Exporter en JSON
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="admin-button-primary flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Ajouter une FAQ</span>
-          </button>
+      {/* En-tête: bouton + à gauche | séparateur | cartes info à droite */}
+      <div className="flex items-stretch justify-between">
+        <div className="flex items-stretch">
+          <PlusActionsMenu
+            buttonTitle="Actions FAQ"
+            buttonClassName="h-12"
+            actions={[
+              { label: 'Importer', onClick: () => setShowImportModal(true) },
+              { label: 'Exporter en CSV', onClick: () => handleExportFAQs('csv') },
+              { label: 'Exporter en JSON', onClick: () => handleExportFAQs('json') },
+              { label: 'Ajouter une FAQ', onClick: () => setShowCreateModal(true) },
+            ]}
+          />
+          <div className="self-center h-6 w-px bg-white/20 mx-4" />
         </div>
-      </div>
-
-      {/* Mini cartes d'informations */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-white">{getFAQStats().total}</p>
-          <p className="text-xs text-white/60">Total</p>
-            </div>
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-green-400">{getFAQStats().active}</p>
-          <p className="text-xs text-white/60">Actives</p>
+        <div className="flex-1 flex items-stretch space-x-3">
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-white leading-none">{getFAQStats().total}</p>
+            <p className="text-xs text-white/60 mt-0.5">Total</p>
           </div>
-        <div className="bg-white/5 rounded-lg p-3 text-center">
-          <p className="text-lg font-bold text-red-400">{getFAQStats().inactive}</p>
-          <p className="text-xs text-white/60">Inactives</p>
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-green-400 leading-none">{getFAQStats().active}</p>
+            <p className="text-xs text-white/60 mt-0.5">Actives</p>
+          </div>
+          <div className="flex-1 bg-white/5 rounded-lg h-12 px-3 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-bold text-red-400 leading-none">{getFAQStats().inactive}</p>
+            <p className="text-xs text-white/60 mt-0.5">Inactives</p>
+          </div>
         </div>
       </div>
 
