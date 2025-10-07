@@ -15,6 +15,7 @@ interface PlusActionsMenuProps {
 const PlusActionsMenu: React.FC<PlusActionsMenuProps> = ({ actions, buttonTitle, buttonClassName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const hasActions = actions && actions.length > 0;
 
   // Fermer le menu si on clique en dehors
   useEffect(() => {
@@ -41,13 +42,16 @@ const PlusActionsMenu: React.FC<PlusActionsMenuProps> = ({ actions, buttonTitle,
   return (
     <div className="relative" ref={menuRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => hasActions && setIsOpen(!isOpen)}
+        disabled={!hasActions}
         className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-          isOpen 
-            ? 'bg-yellow-500 text-gray-900 shadow-lg scale-105' 
-            : 'admin-button-primary'
+          !hasActions
+            ? 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+            : isOpen 
+              ? 'bg-yellow-500 text-gray-900 shadow-lg scale-105' 
+              : 'admin-button-primary'
         } ${buttonClassName || ''}`}
-        title={buttonTitle || 'Actions'}
+        title={hasActions ? (buttonTitle || 'Actions') : 'Aucune action disponible'}
       >
         <Plus className="w-4 h-4" />
       </button>

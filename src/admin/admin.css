@@ -69,7 +69,7 @@
 }
 
 .admin-card {
-  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg p-6;
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg;
 }
 
 .admin-button-primary {
@@ -88,8 +88,18 @@
   @apply min-w-full divide-y divide-white/20;
 }
 
+/* Masquer la scrollbar tout en gardant le scroll fonctionnel */
+.admin-table-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE et Edge */
+}
+
+.admin-table-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .admin-table th {
-  @apply px-6 py-3 bg-white/5 text-left text-xs font-medium text-white/80 uppercase tracking-wider border-b border-white/20;
+  @apply px-6 py-3 bg-red-800/40 text-left text-xs font-medium text-white/90 uppercase tracking-wider border-b border-red-500/30;
 }
 
 .admin-table td {
