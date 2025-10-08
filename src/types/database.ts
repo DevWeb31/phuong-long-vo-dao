@@ -145,6 +145,53 @@ export interface Database {
           created_at?: string;
         };
       };
+      members: {
+        Row: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string | null;
+          phone: string | null;
+          birth_date: string | null;
+          club_id: string | null;
+          status: 'active' | 'inactive' | 'suspended';
+          season: string | null;
+          membership_start_date: string | null;
+          membership_end_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          first_name: string;
+          last_name: string;
+          email?: string | null;
+          phone?: string | null;
+          birth_date?: string | null;
+          club_id?: string | null;
+          status?: 'active' | 'inactive' | 'suspended';
+          season?: string | null;
+          membership_start_date?: string | null;
+          membership_end_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          first_name?: string;
+          last_name?: string;
+          email?: string | null;
+          phone?: string | null;
+          birth_date?: string | null;
+          club_id?: string | null;
+          status?: 'active' | 'inactive' | 'suspended';
+          season?: string | null;
+          membership_start_date?: string | null;
+          membership_end_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
