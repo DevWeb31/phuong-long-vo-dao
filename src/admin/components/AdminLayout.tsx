@@ -183,8 +183,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar - Fixe */}
         <div className="flex-shrink-0 bg-white/10 backdrop-blur-lg border-b border-white/20 shadow-lg">
-          <div className="flex items-center justify-between h-16 px-6">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between h-12 lg:h-16 px-4 lg:px-6">
+            <div className="flex items-center space-x-3 lg:space-x-4 min-w-0">
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="xl:hidden text-white/80 hover:text-white"
@@ -192,21 +192,32 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <Menu className="w-6 h-6" />
               </button>
               {getPageTitle() && (
-                <h1 className="text-xl font-bold text-white">
+                <h1 className="text-base lg:text-xl font-bold text-white truncate max-w-[45vw] lg:max-w-none">
                   {getPageTitle()}
                 </h1>
               )}
-              <span className="text-sm text-white/70">
+              <span className="hidden lg:inline text-sm text-white/70">
                 Dernière connexion: {user?.lastLogin ? new Date(user.lastLogin).toLocaleString('fr-FR') : 'N/A'}
               </span>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 lg:space-x-4">
+              {/* Bouton Site - version mobile icône seule */}
               <a
                 href="/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                className="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg hover:shadow-xl hover:scale-105"
+                title="Aller sur le site principal"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+              {/* Bouton Site - version desktop texte + icône */}
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden lg:flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                 title="Aller sur le site principal"
               >
                 <ExternalLink className="w-4 h-4" />
@@ -223,18 +234,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <button
                   onClick={toggleMaintenanceMode}
                   disabled={isLoading}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  className={`relative inline-flex h-5 w-9 lg:h-6 lg:w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                     isMaintenanceMode ? 'bg-orange-500' : 'bg-gray-200'
                   }`}
                   title={isLoading ? 'Chargement...' : (isMaintenanceMode ? 'Désactiver le mode maintenance' : 'Activer le mode maintenance')}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      isMaintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                    className={`inline-block h-3 w-3 lg:h-4 lg:w-4 transform rounded-full bg-white transition-transform ${
+                      isMaintenanceMode ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'
                     }`}
                   />
                 </button>
-                <span className="text-xs text-white/70">
+                <span className="hidden lg:inline text-xs text-white/70">
                   {isLoading ? '...' : (isMaintenanceMode ? 'Maintenance' : 'Normal')}
                 </span>
               </div>

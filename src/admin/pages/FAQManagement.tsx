@@ -39,6 +39,7 @@ const FAQManagement: React.FC = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewFAQ, setPreviewFAQ] = useState<any>(null);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [animatingRows, setAnimatingRows] = useState<Set<string>>(new Set());
   const [updatingOrders, setUpdatingOrders] = useState<Set<string>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -382,6 +383,29 @@ const FAQManagement: React.FC = () => {
     // Synchronisation automatique des ordres au chargement
   }, [accessibleFAQs]);
 
+  // Fermer les filtres mobiles en cliquant en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showMobileFilters) {
+        const target = event.target as Element;
+        const filtersPanel = target.closest('.mobile-filters-panel');
+        const filtersButton = target.closest('[data-filters-button]');
+        
+        if (!filtersPanel && !filtersButton) {
+          setShowMobileFilters(false);
+        }
+      }
+    };
+
+    if (showMobileFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMobileFilters]);
+
   // Déterminer si on peut réorganiser (possible seulement quand une catégorie spécifique est sélectionnée)
   const canReorder = selectedCategory !== '';
 
@@ -423,17 +447,18 @@ const FAQManagement: React.FC = () => {
 
 
                 
-      {/* FAQ Table */}
-      <AdminTable
-        headers={[
-          'Question',
-          '',
-          'Catégorie',
-          'Club',
-          <span key="statut" className="text-center block">Statut</span>,
-          ...(canReorder ? [<span key="ordre" className="text-center block">Ordre</span>] : []),
-          <span key="actions" className="text-right block">Actions</span>
-        ]}
+      {/* FAQ Table - Desktop */}
+      <div className="hidden lg:block">
+        <AdminTable
+          headers={[
+            'Question',
+            '',
+            'Catégorie',
+            'Club',
+            <span key="statut" className="text-center block">Statut</span>,
+            ...(canReorder ? [<span key="ordre" className="text-center block">Ordre</span>] : []),
+            <span key="actions" className="text-right block">Actions</span>
+          ]}
         filtersContent={(
           <div className="space-y-4">
             <div>
@@ -667,7 +692,163 @@ const FAQManagement: React.FC = () => {
                   </td>
                 </tr>
         ))}
-      </AdminTable>
+        </AdminTable>
+      </div>
+
+      {/* FAQ Cards - Mobile/Tablet */}
+      <div className="lg:hidden space-y-4">
+        {/* Compact Search bar with overlay filters */}
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 w-4 h-4 z-10" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-input pl-10 w-full h-10"
+              />
+            </div>
+            <button
+              onClick={() => setShowMobileFilters(v => !v)}
+              className={`px-3 h-10 text-sm font-medium rounded-lg border transition-colors ${showMobileFilters ? 'bg-yellow-500 text-gray-900 border-yellow-400' : 'bg-white/10 text-white border-white/20'}`}
+              title="Filtres"
+              data-filters-button
+            >
+              Filtres
+            </button>
+          </div>
+          
+          {/* Info discrète sous le champ de recherche */}
+          <div className="flex items-center justify-between mt-2 px-1">
+            <span className="text-xs text-white/50">
+              {filteredFAQs.length} {filteredFAQs.length <= 1 ? 'résultat' : 'résultats'}
+            </span>
+            <div className="flex items-center gap-2 text-xs text-white/40">
+              <span className="px-1.5 py-0.5 bg-white/5 rounded text-white/60">
+                {selectedClub ? (clubs.find(c => c.id === selectedClub)?.name || 'Club') : 'Global'}
+              </span>
+              <span className="px-1.5 py-0.5 bg-white/5 rounded text-white/60">
+                {selectedCategory ? getCategoryLabel(selectedCategory) : 'Toutes les catégories'}
+              </span>
+            </div>
+          </div>
+
+          {showMobileFilters && (
+            <div className="mobile-filters-panel absolute left-0 right-0 top-full mt-2 admin-card p-4 space-y-3 z-50">
+            <div className="grid grid-cols-1 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Club</label>
+                <select
+                  value={selectedClub}
+                  onChange={(e) => setSelectedClub(e.target.value)}
+                  className="admin-input w-full h-11"
+                >
+                  <option value="">Global</option>
+                  {clubs.map(club => (
+                    <option key={club.id} value={club.id}>{club.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Catégorie</label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="admin-input w-full h-11"
+                >
+                  <option value="">Toutes les catégories</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{getCategoryLabel(cat)}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Compteur retiré sur mobile dans la zone de filtres */}
+            </div>
+          )}
+        </div>
+
+        {/* FAQ Cards */}
+        <div className={`space-y-3 max-h-[calc(100vh-220px)] overflow-y-auto admin-table-container pb-6`}>
+          {filteredFAQs.map((faq, index) => (
+            <div
+              key={faq.id}
+              className="admin-card p-4 cursor-pointer hover:bg-white/5 transition-all"
+              onClick={() => handlePreviewFAQ(faq)}
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-medium mb-1 text-sm line-clamp-1 break-words">
+                    {faq.question}
+                  </h3>
+                  <p className="text-white/70 text-xs line-clamp-2 break-words">
+                    {faq.answer}
+                  </p>
+                </div>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ml-3 mt-1 ${faq.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mb-3">
+                {canReorder && (
+                  <span className="admin-badge bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs">
+                    #{index + 1}
+                  </span>
+                )}
+                <span className="admin-badge bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs">
+                  {getCategoryLabel(faq.category)}
+                </span>
+                {faq.club_id ? (
+                  <span className="admin-badge bg-green-500/20 text-green-300 border border-green-500/30 text-xs">
+                    {clubs.find(c => c.id === faq.club_id)?.name || 'Club'}
+                  </span>
+                ) : (
+                  <span className="admin-badge bg-gray-500/20 text-gray-300 border border-gray-500/30 text-xs">
+                    Global
+                  </span>
+                )}
+              </div>
+
+              {canEditFAQ(faq.id) && (
+                <div className="flex items-center justify-end space-x-2 pt-3 border-t border-white/10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedFAQ(faq);
+                      setShowCreateModal(true);
+                    }}
+                    className="text-green-400 hover:text-green-300 p-2"
+                    title="Modifier"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleStatusClick(faq);
+                    }}
+                    className={`p-2 ${faq.is_active ? 'text-yellow-400 hover:text-yellow-300' : 'text-green-400 hover:text-green-300'}`}
+                    title={faq.is_active ? 'Désactiver' : 'Activer'}
+                  >
+                    {faq.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteFAQ(faq.id);
+                    }}
+                    className="text-red-400 hover:text-red-300 p-2"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
 
         {/* Message si aucune FAQ */}
       {filteredFAQs.length === 0 && (
@@ -1183,12 +1364,12 @@ const FAQPreviewModal: React.FC<{
           </div>
 
           {/* Contenu de la FAQ - Style front-end */}
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg p-6 shadow-lg max-h-[55vh] overflow-y-auto">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 break-words">
               {faq.question}
             </h2>
-            <div className="prose prose-gray max-w-none">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <div className="prose prose-gray max-w-none break-words">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
                 {faq.answer}
               </p>
             </div>

@@ -141,6 +141,7 @@ const UserManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [clubFilter, setClubFilter] = useState('');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'active' | 'deleted'>('active');
@@ -172,6 +173,27 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     loadUsers(activeTab === 'deleted');
   }, [activeTab]);
+
+  // Fermer les filtres mobiles en cliquant en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showMobileFilters) {
+        const target = event.target as Element;
+        const filtersPanel = target.closest('.mobile-filters-panel');
+        const filtersButton = target.closest('[data-filters-button]');
+        if (!filtersPanel && !filtersButton) {
+          setShowMobileFilters(false);
+        }
+      }
+    };
+
+    if (showMobileFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMobileFilters]);
 
   const filteredUsers = users
     .filter(user => {
@@ -597,40 +619,43 @@ const UserManagement: React.FC = () => {
 
 
       {/* Tabs */}
-      <div className="flex border-b border-white/20">
-        <button
-          onClick={() => setActiveTab('active')}
-          className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 relative ${
-            activeTab === 'active'
-              ? 'text-red-400 border-red-400 bg-white/5'
-              : 'text-white/70 border-transparent hover:text-white hover:border-white/30'
-          }`}
-        >
-          Utilisateurs
-          {activeTab === 'active' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-400"></div>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('deleted')}
-          className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 relative ${
-            activeTab === 'deleted'
-              ? 'text-red-400 border-red-400 bg-white/5'
-              : 'text-white/70 border-transparent hover:text-white hover:border-white/30'
-          }`}
-        >
-          Utilisateurs supprimés
-          {activeTab === 'deleted' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-400"></div>
-          )}
-        </button>
-        
-        {/* Mot de passe par défaut - visible sur les deux onglets */}
+      <div className="flex flex-col lg:flex-row border-b border-white/20 gap-2 lg:gap-0">
+        <div className="flex overflow-x-auto -mb-px whitespace-nowrap">
+          <button
+            onClick={() => setActiveTab('active')}
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 font-medium text-sm transition-colors border-b-2 relative ${
+              activeTab === 'active'
+                ? 'text-red-400 border-red-400 bg-white/5'
+                : 'text-white/70 border-transparent hover:text-white hover:border-white/30'
+            }`}
+          >
+            Utilisateurs
+            {activeTab === 'active' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-400"></div>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('deleted')}
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 font-medium text-sm transition-colors border-b-2 relative ${
+              activeTab === 'deleted'
+                ? 'text-red-400 border-red-400 bg-white/5'
+                : 'text-white/70 border-transparent hover:text-white hover:border-white/30'
+            }`}
+          >
+            Utilisateurs supprimés
+            {activeTab === 'deleted' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-400"></div>
+            )}
+          </button>
+        </div>
+
+        {/* Mot de passe par défaut - responsive */}
         {(activeTab === 'deleted' || activeTab === 'active') && (
-          <div className="ml-auto flex items-center px-6 py-3">
-            <div className="flex items-center space-x-2 text-sm text-white/70">
+          <div className="lg:ml-auto px-3 py-2 lg:px-6 lg:py-3">
+            <div className="flex items-center flex-wrap gap-2 text-xs sm:text-sm text-white/70">
               <Shield className="w-4 h-4" />
-              <span>Mot de passe après restauration :</span>
+              <span className="hidden sm:inline">Mot de passe après restauration :</span>
+              <span className="sm:hidden">MDP restau. :</span>
               <div className="relative group">
                 <Info className="w-3 h-3 text-blue-400 cursor-help" />
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-64">
@@ -643,7 +668,7 @@ const UserManagement: React.FC = () => {
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText('TempPassword123!');
-                    toast.success('Mot de passe copié dans le presse-papiers');
+                    toast.success('Mot de passe copié');
                   }}
                   className="text-white/60 hover:text-white transition-colors"
                   title="Copier le mot de passe"
@@ -656,7 +681,8 @@ const UserManagement: React.FC = () => {
         )}
       </div>
 
-      {/* Users Table */}
+      {/* Users Table - Desktop */}
+      <div className="hidden lg:block">
       <AdminTable
         headers={[
           'Utilisateur',
@@ -918,6 +944,154 @@ const UserManagement: React.FC = () => {
           </tr>
         ))}
       </AdminTable>
+      </div>
+
+      {/* Users Cards - Mobile/Tablet */}
+      <div className="lg:hidden space-y-4">
+        {/* Barre de recherche compacte et bouton filtres */}
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 w-4 h-4 z-10" />
+              <input
+                type="text"
+                placeholder="Rechercher un utilisateur..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-input pl-10 w-full h-10"
+              />
+            </div>
+            <button
+              onClick={() => setShowMobileFilters(v => !v)}
+              className={`px-3 h-10 text-sm font-medium rounded-lg border transition-colors ${showMobileFilters ? 'bg-yellow-500 text-gray-900 border-yellow-400' : 'bg-white/10 text-white border-white/20'}`}
+              title="Filtres"
+              data-filters-button
+            >
+              Filtres
+            </button>
+          </div>
+
+          {/* Ligne d'info discrète sous la recherche */}
+          <div className="flex items-center justify-between mt-2 px-1">
+            <span className="text-xs text-white/50">{filteredUsers.length} {filteredUsers.length <= 1 ? 'utilisateur' : 'utilisateurs'}</span>
+            <div className="flex items-center gap-2 text-xs text-white/40">
+              <span className="px-1.5 py-0.5 bg-white/5 rounded text-white/60">
+                {roleFilter ? (roleFilter === 'superadmin' ? 'Super Admin' : roleFilter === 'admin' ? 'Administrateur' : 'Admin Club') : 'Tous les rôles'}
+              </span>
+              <span className="px-1.5 py-0.5 bg-white/5 rounded text-white/60">
+                {clubFilter ? (dbClubsById[clubFilter] || clubFilter) : 'Tous les clubs'}
+              </span>
+            </div>
+          </div>
+
+          {showMobileFilters && (
+            <div className="mobile-filters-panel absolute left-0 right-0 top-full mt-2 admin-card p-4 space-y-3 z-50">
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Rôle</label>
+                  <select
+                    value={roleFilter}
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                    className="admin-input w-full h-11"
+                  >
+                    <option value="">Tous les rôles</option>
+                    <option value="superadmin">Super Administrateur</option>
+                    <option value="admin">Administrateur</option>
+                    <option value="club_admin">Admin Club</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Club</label>
+                  <select
+                    value={clubFilter}
+                    onChange={(e) => setClubFilter(e.target.value)}
+                    className="admin-input w-full h-11"
+                  >
+                    <option value="">Tous les clubs</option>
+                    {Object.entries(dbClubsById).map(([clubId, clubName]) => (
+                      <option key={clubId} value={clubId}>{clubName}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Liste en cartes */}
+        <div className={`space-y-3 max-h-[550px] overflow-y-auto admin-table-container`}>
+          {filteredUsers.map((u) => (
+            <div
+              key={u.id}
+              className="admin-card p-4 cursor-pointer hover:bg-white/5 transition-all"
+              onClick={() => handleViewUser(u)}
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-medium mb-1 text-sm line-clamp-1 break-words">
+                    {u.name}
+                  </h3>
+                  <p className="text-white/70 text-xs line-clamp-1 break-words">{u.email}</p>
+                </div>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ml-3 mt-1 ${u.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className={`admin-badge text-xs ${getRoleColor(u.role)}`}>{getRoleLabel(u.role)}</span>
+                <span className="admin-badge bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs">
+                  {u.role === 'superadmin' || (u.clubAccess?.length || 0) === Object.keys(dbClubsById).length ? 'Tous les clubs' : `${u.clubAccess?.length || 0} club(s)`}
+                </span>
+              </div>
+              {activeTab === 'active' && (
+                <div className="flex items-center justify-end space-x-2 pt-3 border-t border-white/10">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setSelectedUser(u); setShowCreateModal(true); }}
+                    className="text-green-400 hover:text-green-300 p-2"
+                    title="Modifier"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  {currentUser && u.email !== currentUser.email && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleToggleStatus(u.id); }}
+                      className={`p-2 ${u.isActive ? 'text-yellow-400 hover:text-yellow-300' : 'text-green-400 hover:text-green-300'}`}
+                      title={u.isActive ? 'Désactiver' : 'Activer'}
+                    >
+                      {u.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  )}
+                  {currentUser && u.email !== currentUser.email && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeleteClick(u); }}
+                      className="text-red-400 hover:text-red-300 p-2"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              )}
+              {activeTab === 'deleted' && currentUser && u.email !== currentUser.email && (
+                <div className="flex items-center justify-end space-x-2 pt-3 border-t border-white/10">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleRestoreClick(u); }}
+                    className="text-green-400 hover:text-green-300 p-2"
+                    title="Restaurer"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDeleteClick(u); }}
+                    className="text-red-400 hover:text-red-300 p-2"
+                    title="Supprimer définitivement"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
         
         {!loading && !error && users.length === 0 && activeTab === 'active' && (
           <div className="text-center py-12">
