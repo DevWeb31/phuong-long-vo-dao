@@ -20,8 +20,7 @@ import {
   Lock,
   Filter as FilterIcon,
   FileText,
-  Eye,
-  EyeOff
+  UserCheck
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import toast from 'react-hot-toast';
@@ -214,12 +213,12 @@ const FAQManagement: React.FC = () => {
     setShowToggleStatusModal(true);
   };
 
-  const handleToggleStatusConfirm = async () => {
+  const handleToggleStatusConfirm = async (newStatus: boolean) => {
     if (!faqToToggle) return;
 
     try {
-      await updateFAQ(faqToToggle.id, { is_active: !faqToToggle.is_active });
-      toast.success(faqToToggle.is_active ? 'FAQ désactivée' : 'FAQ activée');
+      await updateFAQ(faqToToggle.id, { is_active: newStatus });
+      toast.success(newStatus ? 'FAQ activée' : 'FAQ désactivée');
       setShowToggleStatusModal(false);
       setFaqToToggle(null);
     } catch (error) {
@@ -662,14 +661,10 @@ const FAQManagement: React.FC = () => {
                       e.stopPropagation();
                       handleToggleStatusClick(faq);
                     }}
-                    className={`faq-action-button ${
-                      faq.is_active 
-                        ? 'text-yellow-400 hover:text-yellow-300' 
-                        : 'text-green-400 hover:text-green-300'
-                    }`}
-                    title={faq.is_active ? 'Désactiver' : 'Activer'}
+                    className="faq-action-button text-blue-400 hover:text-blue-300"
+                    title="Modifier le statut"
                   >
-                    {faq.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    <UserCheck className="w-4 h-4" />
                   </button>
                   <button
                     onClick={(e) => {
@@ -828,10 +823,10 @@ const FAQManagement: React.FC = () => {
                       e.stopPropagation();
                       handleToggleStatusClick(faq);
                     }}
-                    className={`p-2 ${faq.is_active ? 'text-yellow-400 hover:text-yellow-300' : 'text-green-400 hover:text-green-300'}`}
-                    title={faq.is_active ? 'Désactiver' : 'Activer'}
+                    className="p-2 text-blue-400 hover:text-blue-300"
+                    title="Modifier le statut"
                   >
-                    {faq.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    <UserCheck className="w-4 h-4" />
                   </button>
                   <button
                     onClick={(e) => {
@@ -973,58 +968,78 @@ const FAQManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Toggle Status Confirmation Modal */}
+      {/* Toggle Status Modal */}
       {showToggleStatusModal && faqToToggle && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
-          <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-lg w-full mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className={`p-2 ${faqToToggle.is_active ? 'bg-yellow-500/20' : 'bg-green-500/20'} rounded-lg`}>
-                {faqToToggle.is_active ? (
-                  <EyeOff className="w-6 h-6 text-yellow-400" />
-                ) : (
-                  <Eye className="w-6 h-6 text-green-400" />
-                )}
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <UserCheck className="w-6 h-6 text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">
-                  {faqToToggle.is_active ? 'Désactiver la FAQ' : 'Activer la FAQ'}
-                </h3>
-                <p className="text-white/60 text-sm">
-                  {faqToToggle.is_active 
-                    ? 'La FAQ ne sera plus visible publiquement' 
-                    : 'La FAQ sera visible publiquement'}
-                </p>
+                <h3 className="text-lg font-semibold text-white">Modifier le statut</h3>
+                <p className="text-white/60 text-sm">Choisissez le nouveau statut de la FAQ</p>
               </div>
             </div>
 
             <div className="mb-6">
-              <p className="text-white mb-2">
-                Êtes-vous sûr de vouloir {faqToToggle.is_active ? 'désactiver' : 'activer'} cette FAQ ?
-              </p>
-              <div className="bg-gray-800/50 rounded-lg p-3 border border-white/10">
-                <p className="text-white font-medium text-sm">{faqToToggle.question}</p>
+              <div className="bg-gray-800/50 rounded-lg p-3 border border-white/10 mb-4">
+                <p className="text-white font-medium text-sm line-clamp-2">{faqToToggle.question}</p>
+                <p className="text-white/40 text-xs mt-1">
+                  Statut actuel : {faqToToggle.is_active ? 'Active' : 'Inactive'}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleToggleStatusConfirm(true)}
+                  disabled={faqToToggle.is_active}
+                  className={`w-full flex items-center space-x-3 p-4 rounded-lg border transition-colors ${
+                    faqToToggle.is_active
+                      ? 'bg-green-500/20 border-green-500/50 cursor-not-allowed opacity-60'
+                      : 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                  <div className="text-left flex-1">
+                    <div className="text-green-300 font-medium">Active</div>
+                    <div className="text-green-400/70 text-sm">La FAQ sera visible publiquement</div>
+                  </div>
+                  {faqToToggle.is_active && (
+                    <div className="text-green-400 text-xs">(Actuel)</div>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => handleToggleStatusConfirm(false)}
+                  disabled={!faqToToggle.is_active}
+                  className={`w-full flex items-center space-x-3 p-4 rounded-lg border transition-colors ${
+                    !faqToToggle.is_active
+                      ? 'bg-red-500/20 border-red-500/50 cursor-not-allowed opacity-60'
+                      : 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+                  <div className="text-left flex-1">
+                    <div className="text-red-300 font-medium">Inactive</div>
+                    <div className="text-red-400/70 text-sm">La FAQ ne sera plus visible publiquement</div>
+                  </div>
+                  {!faqToToggle.is_active && (
+                    <div className="text-red-400 text-xs">(Actuel)</div>
+                  )}
+                </button>
               </div>
             </div>
 
-            <div className="flex space-x-3">
+            <div className="flex justify-end">
               <button
                 onClick={() => {
                   setShowToggleStatusModal(false);
                   setFaqToToggle(null);
                 }}
-                className="flex-1 px-4 py-2 text-white/70 hover:text-white border border-white/20 rounded-lg hover:border-white/30 transition-colors"
+                className="px-4 py-2 text-white/70 hover:text-white border border-white/20 rounded-lg hover:border-white/30 transition-colors"
               >
                 Annuler
-              </button>
-              <button
-                onClick={handleToggleStatusConfirm}
-                className={`flex-1 px-4 py-2 ${
-                  faqToToggle.is_active 
-                    ? 'bg-yellow-600 hover:bg-yellow-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                } text-white rounded-lg transition-colors`}
-              >
-                {faqToToggle.is_active ? 'Désactiver' : 'Activer'}
               </button>
             </div>
           </div>

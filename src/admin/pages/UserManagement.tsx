@@ -5,8 +5,7 @@ import {
   Edit, 
   Trash2, 
   Shield, 
-  Eye, 
-  EyeOff,
+  UserCheck,
   Search,
   AlertTriangle,
   RotateCcw,
@@ -15,8 +14,8 @@ import {
   Info,
   Phone,
   Mail,
-  
-  
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import AdminTable from '../components/AdminTable';
@@ -354,18 +353,17 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const confirmToggleStatus = async () => {
+  const confirmToggleStatus = async (newStatus: boolean) => {
     if (!userToToggle) return;
     
-    const next = !userToToggle.isActive;
     try {
       const { error } = await supabase
         .from('users')
-        .update({ is_active: next })
+        .update({ is_active: newStatus })
         .eq('id', userToToggle.id);
       if (error) throw error;
-      setUsers(users.map(u => u.id === userToToggle.id ? { ...u, isActive: next } : u));
-      toast.success(`Utilisateur ${next ? 'activé' : 'désactivé'} avec succès`);
+      setUsers(users.map(u => u.id === userToToggle.id ? { ...u, isActive: newStatus } : u));
+      toast.success(`Utilisateur ${newStatus ? 'activé' : 'désactivé'} avec succès`);
     } catch (e: any) {
       console.error(e);
       toast.error("Erreur lors du changement de statut");
@@ -890,14 +888,10 @@ const UserManagement: React.FC = () => {
                             e.stopPropagation();
                             handleToggleStatus(user.id);
                           }}
-                          className={`${
-                            user.isActive 
-                              ? 'text-yellow-600 hover:text-yellow-800' 
-                              : 'text-green-600 hover:text-green-800'
-                          }`}
-                          title={user.isActive ? 'Désactiver' : 'Activer'}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Modifier le statut"
                         >
-                          {user.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          <UserCheck className="w-4 h-4" />
                         </button>
                       )}
                       {currentUser && user.email !== currentUser.email && (
@@ -1053,10 +1047,10 @@ const UserManagement: React.FC = () => {
                   {currentUser && u.email !== currentUser.email && (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleToggleStatus(u.id); }}
-                      className={`p-2 ${u.isActive ? 'text-yellow-400 hover:text-yellow-300' : 'text-green-400 hover:text-green-300'}`}
-                      title={u.isActive ? 'Désactiver' : 'Activer'}
+                      className="p-2 text-blue-400 hover:text-blue-300"
+                      title="Modifier le statut"
                     >
-                      {u.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      <UserCheck className="w-4 h-4" />
                     </button>
                   )}
                   {currentUser && u.email !== currentUser.email && (
@@ -1324,80 +1318,85 @@ const UserManagement: React.FC = () => {
       {/* Modal de confirmation du changement de statut */}
       {showToggleStatusModal && userToToggle && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-lg w-full mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className={`p-2 rounded-lg ${userToToggle.isActive ? 'bg-orange-500/20' : 'bg-green-500/20'}`}>
-                {userToToggle.isActive ? 
-                  <EyeOff className="w-6 h-6 text-orange-400" /> : 
-                  <Eye className="w-6 h-6 text-green-400" />
-                }
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <UserCheck className="w-6 h-6 text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">
-                  {userToToggle.isActive ? 'Désactiver l\'utilisateur' : 'Activer l\'utilisateur'}
-                </h3>
-                <p className="text-white/70">
-                  {userToToggle.isActive 
-                    ? 'Cet utilisateur ne pourra plus se connecter' 
-                    : 'Cet utilisateur pourra à nouveau se connecter'
-                  }
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-white/5 rounded-lg p-4 mb-6">
-              <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  userToToggle.isActive ? 'bg-orange-500' : 'bg-green-500'
-                }`}>
-                  <span className="text-white font-semibold">
-                    {userToToggle.name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-white font-medium">{userToToggle.name}</p>
-                  <p className="text-white/70 text-sm">{userToToggle.email}</p>
-                  <p className="text-white/50 text-xs">{getRoleLabel(userToToggle.role)}</p>
-                </div>
+                <h3 className="text-lg font-semibold text-white">Modifier le statut</h3>
+                <p className="text-white/60 text-sm">Choisissez le nouveau statut de l'utilisateur</p>
               </div>
             </div>
 
-            <div className={`${userToToggle.isActive ? 'bg-orange-500/10 border-orange-500/20' : 'bg-green-500/10 border-green-500/20'} border rounded-lg p-3 mb-6`}>
-              <div className="flex items-start space-x-2">
-                <AlertTriangle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${userToToggle.isActive ? 'text-orange-400' : 'text-green-400'}`} />
-                <div className="text-sm">
-                  <p className={`font-medium ${userToToggle.isActive ? 'text-orange-400' : 'text-green-400'}`}>
-                    {userToToggle.isActive ? 'Désactivation' : 'Activation'}
-                  </p>
-                  <p className={userToToggle.isActive ? 'text-orange-300' : 'text-green-300'}>
-                    {userToToggle.isActive 
-                      ? 'L\'utilisateur sera désactivé et ne pourra plus accéder au système jusqu\'à réactivation.'
-                      : 'L\'utilisateur sera activé et pourra à nouveau accéder au système.'
-                    }
-                  </p>
+            <div className="mb-6">
+              <div className="bg-gray-800/50 rounded-lg p-3 border border-white/10 mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-semibold">
+                      {userToToggle.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm">{userToToggle.name}</p>
+                    <p className="text-white/60 text-xs">{userToToggle.email}</p>
+                    <p className="text-white/40 text-xs">
+                      Statut actuel : {userToToggle.isActive ? 'Actif' : 'Inactif'}
+                    </p>
+                  </div>
                 </div>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => confirmToggleStatus(true)}
+                  disabled={userToToggle.isActive}
+                  className={`w-full flex items-center space-x-3 p-4 rounded-lg border transition-colors ${
+                    userToToggle.isActive
+                      ? 'bg-green-500/20 border-green-500/50 cursor-not-allowed opacity-60'
+                      : 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                  <div className="text-left flex-1">
+                    <div className="text-green-300 font-medium">Actif</div>
+                    <div className="text-green-400/70 text-sm">L'utilisateur peut se connecter au système</div>
+                  </div>
+                  {userToToggle.isActive && (
+                    <div className="text-green-400 text-xs">(Actuel)</div>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => confirmToggleStatus(false)}
+                  disabled={!userToToggle.isActive}
+                  className={`w-full flex items-center space-x-3 p-4 rounded-lg border transition-colors ${
+                    !userToToggle.isActive
+                      ? 'bg-red-500/20 border-red-500/50 cursor-not-allowed opacity-60'
+                      : 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+                  <div className="text-left flex-1">
+                    <div className="text-red-300 font-medium">Inactif</div>
+                    <div className="text-red-400/70 text-sm">L'utilisateur ne peut plus se connecter</div>
+                  </div>
+                  {!userToToggle.isActive && (
+                    <div className="text-red-400 text-xs">(Actuel)</div>
+                  )}
+                </button>
               </div>
             </div>
 
-            <div className="flex space-x-3">
+            <div className="flex justify-end">
               <button
                 onClick={() => {
                   setShowToggleStatusModal(false);
                   setUserToToggle(null);
                 }}
-                className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+                className="px-4 py-2 text-white/70 hover:text-white border border-white/20 rounded-lg hover:border-white/30 transition-colors"
               >
                 Annuler
-              </button>
-              <button
-                onClick={confirmToggleStatus}
-                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  userToToggle.isActive
-                    ? 'bg-orange-600 text-white hover:bg-orange-700'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                }`}
-              >
-                {userToToggle.isActive ? 'Désactiver' : 'Activer'}
               </button>
             </div>
           </div>
