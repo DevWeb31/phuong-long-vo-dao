@@ -19,16 +19,19 @@ import {
   GripVertical,
   Lock,
   Filter as FilterIcon,
-  FileText
+  FileText,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import toast from 'react-hot-toast';
+import AdminTable from '../components/AdminTable';
 import PlusActionsMenu from '../components/PlusActionsMenu';
 
 const FAQManagement: React.FC = () => {
   const { faqs, clubs, users, addFAQ, updateFAQ, deleteFAQ, getAccessibleFAQs, canEditFAQ, user } = useAdmin();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('general');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedClub, setSelectedClub] = useState('');
   
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -42,8 +45,10 @@ const FAQManagement: React.FC = () => {
   const [faqToDelete, setFaqToDelete] = useState<any>(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [newFAQId, setNewFAQId] = useState<string | null>(null);
+  const [showToggleStatusModal, setShowToggleStatusModal] = useState(false);
+  const [faqToToggle, setFaqToToggle] = useState<any>(null);
 
-  const categories = ['general', 'practice', 'equipment', 'registration', 'events'];
+  const categories = ['general', 'enfants', 'equipement', 'inscription', 'tarifs', 'evenements'];
 
 
   // Utiliser les FAQ accessibles selon les permissions
@@ -60,15 +65,7 @@ const FAQManagement: React.FC = () => {
 
     // Filtres
     const matchesCategory = !selectedCategory || faq.category === selectedCategory;
-    let matchesClub;
-    if (selectedClub === '') {
-      // "Global" sélectionné : seulement les FAQ générales (club_id === null)
-      matchesClub = !faq.club_id;
-    } else {
-      // Club spécifique sélectionné : seulement les FAQ de ce club
-      matchesClub = faq.club_id === selectedClub;
-    }
-
+    const matchesClub = !selectedClub || faq.club_id === selectedClub;
 
     return matchesSearch && matchesCategory && matchesClub;
   }).sort((a, b) => a.order_index - b.order_index);
@@ -76,10 +73,11 @@ const FAQManagement: React.FC = () => {
   const getCategoryLabel = (category: string) => {
     const labels = {
       general: 'Général',
-      practice: 'Pratique',
-      equipment: 'Équipement',
-      registration: 'Inscription',
-      events: 'Événements'
+      enfants: 'Enfants',
+      equipement: 'Équipement',
+      inscription: 'Inscription',
+      tarifs: 'Tarifs',
+      evenements: 'Événements'
     };
     return labels[category as keyof typeof labels] || category;
   };
@@ -204,6 +202,29 @@ const FAQManagement: React.FC = () => {
   const handlePreviewFAQ = (faq: any) => {
     setPreviewFAQ(faq);
     setShowPreviewModal(true);
+  };
+
+  const handleToggleStatusClick = (faq: any) => {
+    if (!canEditFAQ(faq.id)) {
+      toast.error('Vous n\'avez pas les droits pour modifier cette FAQ');
+      return;
+    }
+    setFaqToToggle(faq);
+    setShowToggleStatusModal(true);
+  };
+
+  const handleToggleStatusConfirm = async () => {
+    if (!faqToToggle) return;
+
+    try {
+      await updateFAQ(faqToToggle.id, { is_active: !faqToToggle.is_active });
+      toast.success(faqToToggle.is_active ? 'FAQ désactivée' : 'FAQ activée');
+      setShowToggleStatusModal(false);
+      setFaqToToggle(null);
+    } catch (error) {
+      console.error('Erreur lors du changement de statut:', error);
+      toast.error('Erreur lors du changement de statut');
+    }
   };
 
 
@@ -361,8 +382,8 @@ const FAQManagement: React.FC = () => {
     // Synchronisation automatique des ordres au chargement
   }, [accessibleFAQs]);
 
-  // Déterminer si on peut réorganiser (possible pour Global et clubs spécifiques)
-  const canReorder = true; // Permettre la réorganisation pour toutes les FAQ
+  // Déterminer si on peut réorganiser (possible seulement quand une catégorie spécifique est sélectionnée)
+  const canReorder = selectedCategory !== '';
 
   return (
     <div className="space-y-6">
@@ -397,87 +418,82 @@ const FAQManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Filtres et recherche */}
-      <div className="admin-card">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
-              Recherche
-            </label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
-            <input
-              type="text"
-                placeholder="Rechercher par mots-clés..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-input pl-10 w-full"
-            />
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
-              Club
-            </label>
-            <select
-              value={selectedClub}
-              onChange={(e) => setSelectedClub(e.target.value)}
-              className="admin-input w-full"
-            >
-              <option value="">Global</option>
-              {clubs.map(club => (
-                <option key={club.id} value={club.id}>{club.name}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
-              Catégorie
-            </label>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-              className="admin-input w-full"
-          >
-            {categories.map(category => (
-              <option key={category} value={category}>
-                {getCategoryLabel(category)}
-              </option>
-            ))}
-          </select>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center justify-between text-sm text-white/60">
-          <div>
-            <span>{filteredFAQs.length} {filteredFAQs.length <= 1 ? 'résultat trouvé' : 'résultats trouvés'}</span>
-            {filteredFAQs.length > 1 && (
-              <span className="ml-2 text-white/40">• Utilisez les flèches pour réorganiser</span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Compteur déplacé dans footer + Filtres via modal */}
 
 
 
                 
       {/* FAQ Table */}
-      <div className="admin-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Question</th>
-                <th className="text-center"></th>
-                <th>Catégorie</th>
-                <th>Club</th>
-                <th>Statut</th>
-                {canReorder && <th>Ordre</th>}
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+      <AdminTable
+        headers={[
+          'Question',
+          '',
+          'Catégorie',
+          'Club',
+          <span key="statut" className="text-center block">Statut</span>,
+          ...(canReorder ? [<span key="ordre" className="text-center block">Ordre</span>] : []),
+          <span key="actions" className="text-right block">Actions</span>
+        ]}
+        filtersContent={(
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">Club</label>
+              <select
+                value={selectedClub}
+                onChange={(e) => setSelectedClub(e.target.value)}
+                className="admin-input w-full"
+              >
+                <option value="">Global</option>
+                {clubs.map(club => (
+                  <option key={club.id} value={club.id}>{club.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">Catégorie</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="admin-input w-full"
+              >
+                <option value="">Toutes les catégories</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{getCategoryLabel(cat)}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+        footerLeft={(
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Rechercher par mots-clés..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="admin-input pl-10 h-9 w-64"
+              />
+            </div>
+            <div className="h-6 w-px bg-white/20"></div>
+            <span className="text-sm text-white/70">{filteredFAQs.length} {filteredFAQs.length <= 1 ? 'résultat trouvé' : 'résultats trouvés'}</span>
+            <>
+              <div className="h-6 w-px bg-white/20"></div>
+              <div className="flex items-center gap-2 text-xs text-white/60">
+                <span className="px-2 py-1 bg-white/10 rounded border border-white/20">
+                  Club: {selectedClub ? (clubs.find(c => c.id === selectedClub)?.name || selectedClub) : 'Global'}
+                </span>
+                <span className="px-2 py-1 bg-white/10 rounded border border-white/20">
+                  Catégorie: {selectedCategory ? getCategoryLabel(selectedCategory) : 'Toutes les catégories'}
+                </span>
+              </div>
+            </>
+          </div>
+        )}
+        bodyHeightClass="h-[calc(100vh-223px)]"
+        wrapperMaxHeightClass="max-h-[calc(100vh-183px)]"
+      >
         {filteredFAQs.map((faq, index) => (
                 <tr 
                   key={faq.id} 
@@ -495,10 +511,10 @@ const FAQManagement: React.FC = () => {
                     <div className="flex items-start">
               <div className="flex-1">
                         <div className="text-sm font-medium text-white mb-1">
-                          {faq.question}
+                          {faq.question.length > 40 ? `${faq.question.substring(0, 40)}...` : faq.question}
         </div>
                         <div className="text-sm text-white/70 line-clamp-2">
-                  {faq.answer}
+                  {faq.answer.length > 40 ? `${faq.answer.substring(0, 40)}...` : faq.answer}
       </div>
                       </div>
                     </div>
@@ -541,7 +557,7 @@ const FAQManagement: React.FC = () => {
                   </td>
                   
                   {/* Statut */}
-                  <td>
+                  <td className="text-center">
                     <div className="relative group flex justify-center items-center">
                       <div className={`w-3 h-3 rounded-full ${
                         faq.is_active ? 'bg-green-500' : 'bg-red-500'
@@ -555,9 +571,9 @@ const FAQManagement: React.FC = () => {
                   </td>
                   
                   {/* Ordre */}
-                  {canReorder && (
-                    <td>
-                      <div className="faq-order-controls">
+                {canReorder && (
+                    <td className="text-center">
+                      <div className="faq-order-controls flex justify-center">
                         {canEditFAQ(faq.id) ? (
                           <>
                   <button
@@ -589,7 +605,7 @@ const FAQManagement: React.FC = () => {
                   </button>
                           </>
                         ) : (
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center justify-center space-x-2">
                             <Lock className="w-4 h-4 text-yellow-400" />
                             <span className="text-sm font-medium text-white">
                               {faq.order_index}
@@ -601,8 +617,8 @@ const FAQManagement: React.FC = () => {
                   )}
                   
                   {/* Actions */}
-                  <td>
-                <div className="flex items-center space-x-2">
+                  <td className="text-right">
+                <div className="flex items-center justify-end space-x-2">
                       {canEditFAQ(faq.id) ? (
                         <>
                   <button
@@ -615,6 +631,20 @@ const FAQManagement: React.FC = () => {
                     title="Modifier"
                   >
                     <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleStatusClick(faq);
+                    }}
+                    className={`faq-action-button ${
+                      faq.is_active 
+                        ? 'text-yellow-400 hover:text-yellow-300' 
+                        : 'text-green-400 hover:text-green-300'
+                    }`}
+                    title={faq.is_active ? 'Désactiver' : 'Activer'}
+                  >
+                    {faq.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                   <button
                     onClick={(e) => {
@@ -637,9 +667,7 @@ const FAQManagement: React.FC = () => {
                   </td>
                 </tr>
         ))}
-            </tbody>
-          </table>
-      </div>
+      </AdminTable>
 
         {/* Message si aucune FAQ */}
       {filteredFAQs.length === 0 && (
@@ -653,8 +681,7 @@ const FAQManagement: React.FC = () => {
             </p>
         </div>
       )}
-      </div>
-
+      
 
       {/* Create/Edit FAQ Modal */}
       {showCreateModal && (
@@ -712,6 +739,7 @@ const FAQManagement: React.FC = () => {
         />
       )}
 
+
       {/* Import Modal */}
       {showImportModal && (
         <FAQImportModal
@@ -764,8 +792,65 @@ const FAQManagement: React.FC = () => {
         </div>
       )}
 
+      {/* Toggle Status Confirmation Modal */}
+      {showToggleStatusModal && faqToToggle && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+          <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className={`p-2 ${faqToToggle.is_active ? 'bg-yellow-500/20' : 'bg-green-500/20'} rounded-lg`}>
+                {faqToToggle.is_active ? (
+                  <EyeOff className="w-6 h-6 text-yellow-400" />
+                ) : (
+                  <Eye className="w-6 h-6 text-green-400" />
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">
+                  {faqToToggle.is_active ? 'Désactiver la FAQ' : 'Activer la FAQ'}
+                </h3>
+                <p className="text-white/60 text-sm">
+                  {faqToToggle.is_active 
+                    ? 'La FAQ ne sera plus visible publiquement' 
+                    : 'La FAQ sera visible publiquement'}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <p className="text-white mb-2">
+                Êtes-vous sûr de vouloir {faqToToggle.is_active ? 'désactiver' : 'activer'} cette FAQ ?
+              </p>
+              <div className="bg-gray-800/50 rounded-lg p-3 border border-white/10">
+                <p className="text-white font-medium text-sm">{faqToToggle.question}</p>
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => {
+                  setShowToggleStatusModal(false);
+                  setFaqToToggle(null);
+                }}
+                className="flex-1 px-4 py-2 text-white/70 hover:text-white border border-white/20 rounded-lg hover:border-white/30 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleToggleStatusConfirm}
+                className={`flex-1 px-4 py-2 ${
+                  faqToToggle.is_active 
+                    ? 'bg-yellow-600 hover:bg-yellow-700' 
+                    : 'bg-green-600 hover:bg-green-700'
+                } text-white rounded-lg transition-colors`}
+              >
+                {faqToToggle.is_active ? 'Désactiver' : 'Activer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Status Confirmation Modal */}
-      {console.log('🔍 DEBUG - Rendu modal de statut:', showStatusModal, 'newFAQId:', newFAQId)}
       {showStatusModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
           <div className="bg-gray-900 border border-white/20 rounded-lg p-6 max-w-lg w-full mx-4">

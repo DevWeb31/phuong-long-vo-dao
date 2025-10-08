@@ -99,7 +99,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 lg:hidden"
+          className="fixed inset-0 z-40 xl:hidden"
           onClick={() => setSidebarOpen(false)}
         >
           <div className="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
@@ -107,7 +107,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/10 backdrop-blur-lg border-r border-white/20 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:flex-col ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/10 backdrop-blur-lg border-r border-white/20 shadow-2xl transform transition-transform duration-300 ease-in-out xl:translate-x-0 xl:static xl:inset-0 xl:flex xl:flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-red-600 to-red-700 border-b border-white/20">
@@ -122,7 +122,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-white hover:text-yellow-200"
+            className="xl:hidden text-white hover:text-yellow-200"
           >
             <X className="w-6 h-6" />
           </button>
@@ -187,7 +187,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-white/80 hover:text-white"
+                className="xl:hidden text-white/80 hover:text-white"
               >
                 <Menu className="w-6 h-6" />
               </button>
@@ -242,8 +242,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Page content - Scrollable */}
-        <main className="flex-1 p-6 overflow-y-auto admin-content">
+        {/* Page content - Internal components handle their own scroll */}
+        <main className="flex-1 p-6 overflow-hidden admin-content">
           {children}
         </main>
       </div>
