@@ -1,0 +1,185 @@
+{
+  "common": {
+    "appName": "Phuong Long Vo Dao",
+    "navigation": {
+      "home": "Home",
+      "clubs": "Our Clubs",
+      "courses": "Courses",
+      "instructors": "Instructors",
+      "events": "Events",
+      "news": "News",
+      "contact": "Contact",
+      "dashboard": "Dashboard"
+    },
+    "actions": {
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "search": "Search",
+      "filter": "Filter",
+      "back": "Back",
+      "next": "Next",
+      "previous": "Previous",
+      "viewMore": "View more",
+      "viewLess": "View less",
+      "seeMore": "Learn more",
+      "close": "Close"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "roles": {
+      "superadmin": "Super Administrator",
+      "admin_club": "Club Administrator",
+      "coach": "Coach",
+      "membre": "Member"
+    }
+  },
+  "marketing": {
+    "hero": {
+      "title": "Discover Vietnamese Martial Arts",
+      "subtitle": "Phuong Long Vo Dao is an ancestral martial art combining technique, discipline and philosophy. Join one of our 5 clubs in France.",
+      "cta": "Find a club",
+      "ctaSecondary": "Learn more"
+    },
+    "clubs": {
+      "title": "Our Clubs",
+      "subtitle": "Find the club nearest to you",
+      "viewClub": "View club",
+      "findClub": "Find a club",
+      "noClubs": "No clubs available"
+    },
+    "courses": {
+      "title": "Our Courses",
+      "subtitle": "Courses adapted to all levels",
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "all": "All levels"
+      },
+      "schedule": "Schedule",
+      "capacity": "Capacity",
+      "coach": "Coach"
+    },
+    "events": {
+      "title": "Events",
+      "subtitle": "Workshops, competitions and upcoming events",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "register": "Register",
+      "registrationClosed": "Registration closed",
+      "spotsRemaining": "{count} spots remaining",
+      "full": "Full"
+    },
+    "news": {
+      "title": "News",
+      "subtitle": "Latest news from our clubs",
+      "readMore": "Read more",
+      "publishedOn": "Published on {date}",
+      "by": "by {author}"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Have a question? Feel free to contact us",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "club": "Related club",
+        "message": "Message",
+        "send": "Send message",
+        "success": "Your message has been sent successfully!",
+        "error": "An error occurred. Please try again."
+      }
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Sign in to your member area",
+      "email": "Email address",
+      "password": "Password",
+      "magicLink": "Get a magic link",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "success": "An email has been sent to you!",
+      "error": "Sign in error"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "subtitle": "Create your member account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "signOut": "Sign out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": {
+      "title": "Overview",
+      "stats": {
+        "members": "Members",
+        "courses": "Courses",
+        "events": "Events",
+        "registrations": "Registrations"
+      }
+    },
+    "courses": {
+      "title": "Courses Management",
+      "create": "New course",
+      "edit": "Edit course",
+      "delete": "Delete course",
+      "form": {
+        "title": "Course title",
+        "description": "Description",
+        "level": "Level",
+        "coach": "Coach",
+        "location": "Location",
+        "dayOfWeek": "Day of week",
+        "startTime": "Start time",
+        "endTime": "End time",
+        "capacity": "Capacity"
+      }
+    },
+    "instructors": {
+      "title": "Instructors Management",
+      "create": "New instructor",
+      "edit": "Edit instructor"
+    },
+    "events": {
+      "title": "Events Management",
+      "create": "New event",
+      "edit": "Edit event",
+      "registrations": "Registrations"
+    },
+    "posts": {
+      "title": "News Management",
+      "create": "New post",
+      "edit": "Edit post"
+    },
+    "media": {
+      "title": "Media Library",
+      "upload": "Upload",
+      "delete": "Delete file"
+    },
+    "settings": {
+      "title": "Club Settings",
+      "general": "General information",
+      "contact": "Contact details",
+      "social": "Social networks",
+      "locations": "Training locations"
+    }
+  }
+}
+
