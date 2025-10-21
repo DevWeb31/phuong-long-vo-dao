@@ -5,7 +5,7 @@
 export const siteConfig = {
   name: "Phuong Long Vo Dao",
   description: "Fédération française de Vo Dao vietnamien - Arts martiaux traditionnels",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://phuong-long-vo-dao.vercel.app",
   ogImage: "/images/og-image.jpg",
   links: {
     twitter: "https://twitter.com/phuonglongvodao",
@@ -27,7 +27,7 @@ export const siteConfig = {
   authors: [
     {
       name: "Phuong Long Vo Dao",
-      url: "https://phuonglongvodao.fr",
+      url: "https://phuong-long-vo-dao.vercel.app",
     },
   ],
   creator: "Phuong Long Vo Dao",
@@ -46,7 +46,7 @@ export const siteConfig = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://phuong-long-vo-dao.vercel.app",
     title: "Phuong Long Vo Dao - Fédération française de Vo Dao vietnamien",
     description: "Découvrez les arts martiaux vietnamiens traditionnels avec Phuong Long Vo Dao. Cours, événements et philosophie martiale.",
     siteName: "Phuong Long Vo Dao",
